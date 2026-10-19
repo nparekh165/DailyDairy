@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Milk drop with a bill fold: 108dp adaptive canvas, art inside the 66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFDF7"
+        android:pathData="M54,26C54,26 34,49 34,62.5C34,73.8 42.9,82 54,82C65.1,82 74,73.8 74,62.5C74,49 54,26 54,26Z" />
+    <path
+        android:fillColor="#0F5C4D"
+        android:pathData="M45,58h18v3h-18zM45,64.5h18v3h-18zM45,71h11v3h-11z" />
+    <path
+        android:fillColor="#E9B44C"
+        android:pathData="M60.5,41.5a4,4 0,1 0,8 0a4,4 0,1 0,-8 0z" />
+</vector>

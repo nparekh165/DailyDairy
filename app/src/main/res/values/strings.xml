@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Khodiyar Dairy Billing</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_delivery">Delivery</string>
+    <string name="nav_daily_entry">Daily entry</string>
+    <string name="nav_daily_summary">Daily summary</string>
+    <string name="nav_customers">Customers</string>
+    <string name="nav_billing">Billing</string>
+    <string name="nav_more">More</string>
+    <string name="nav_products">Products &amp; rates</string>
+    <string name="nav_payments">Payments</string>
+    <string name="nav_reports">Reports</string>
+    <string name="nav_backup">Backup &amp; restore</string>
+    <string name="nav_staff">Staff accounts</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_audit">Audit log</string>
+
+    <!-- Actions -->
+    <string name="action_add_customer">Add customer</string>
+    <string name="action_add_product">Add product</string>
+    <string name="action_add_staff">Add staff</string>
+    <string name="action_adjust">Adjust</string>
+    <string name="action_all_products">All products</string>
+    <string name="action_bill">Bill</string>
+    <string name="action_call">Call</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_change_customer">Change customer</string>
+    <string name="action_change_pin">Change my PIN</string>
+    <string name="action_choose_backup">Choose backup file</string>
+    <string name="action_clear_entry">Clear entry</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_copy_message">Copy message</string>
+    <string name="action_copy_previous_day">Copy previous day</string>
+    <string name="action_create_account">Create admin account</string>
+    <string name="action_create_backup">Create backup</string>
+    <string name="action_deactivate">Deactivate customer</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_discard">Discard</string>
+    <string name="action_discard_changes">Discard unsaved changes</string>
+    <string name="action_done">Done</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_enter_now">Enter now</string>
+    <string name="action_export_all_pdfs">Export finalized PDFs to folder</string>
+    <string name="action_export_csv">Export CSV</string>
+    <string name="action_export_draft_pdfs">Export all PDFs (incl. drafts)</string>
+    <string name="action_export_pdf">Export PDF</string>
+    <string name="action_fill_usual">Fill usual quantities</string>
+    <string name="action_finalize">Finalize</string>
+    <string name="action_finalize_all">Finalize %1$d draft bills</string>
+    <string name="action_finalize_invoice">Finalize this invoice</string>
+    <string name="action_forgot_pin">Forgot PIN?</string>
+    <string name="action_generate_bills">Bills</string>
+    <string name="action_issue_revision">Issue revised invoice</string>
+    <string name="action_lock_period">Lock month</string>
+    <string name="action_logout">Sign out</string>
+    <string name="action_mark_missed">Mark missed (not delivered)</string>
+    <string name="action_mark_no_delivery">Mark no delivery needed</string>
+    <string name="action_new_rate">New rate</string>
+    <string name="action_ok">OK</string>
+    <string name="action_open">Open</string>
+    <string name="action_open_chat">WhatsApp chat</string>
+    <string name="action_pay_full">Fill full due (%1$s)</string>
+    <string name="action_payment">Payment</string>
+    <string name="action_pdf_share">PDF &amp; share</string>
+    <string name="action_reactivate">Reactivate customer</string>
+    <string name="action_record_another">Record another payment</string>
+    <string name="action_record_anyway">Record anyway</string>
+    <string name="action_record_payment">Record payment</string>
+    <string name="action_reopen_period">Reopen month</string>
+    <string name="action_reset_pin">Reset PIN</string>
+    <string name="action_restore">Restore this backup</string>
+    <string name="action_retry">Try again</string>
+    <string name="action_reverse">Reverse</string>
+    <string name="action_review">Review</string>
+    <string name="action_save">Save</string>
+    <string name="action_save_all">Save all</string>
+    <string name="action_save_copy">Save copy</string>
+    <string name="action_save_payment">Save payment</string>
+    <string name="action_save_settings">Save settings</string>
+    <string name="action_save_to_device">Save to device</string>
+    <string name="action_see_all">See all</string>
+    <string name="action_set_rate">Set rate</string>
+    <string name="action_share">Share…</string>
+    <string name="action_share_receipt">View &amp; share receipt</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_void">Void</string>
+    <string name="action_whatsapp">WhatsApp</string>
+
+    <!-- Adjustments -->
+    <string name="adj_credit">Credit</string>
+    <string name="adj_debit">Debit</string>
+    <string name="adj_credit_long">Credit (reduce dues)</string>
+    <string name="adj_debit_long">Debit (add charge)</string>
+
+    <string name="audit_subtitle">Latest 500 sensitive changes</string>
+
+    <!-- Backup -->
+    <string name="backup_create_title">Create a backup</string>
+    <string name="backup_create_msg">Saves every customer, delivery, rate, payment, invoice, user and audit record into one ZIP file at a location you choose.</string>
+    <string name="backup_device_warning">A backup kept only on this phone is lost if the phone is lost or damaged. Copy the backup file to another device, pen drive or computer regularly.</string>
+    <string name="backup_restore_title">Restore from backup</string>
+    <string name="backup_restore_msg">The file is checked for integrity and compatibility before anything changes. A safety copy of current data is created automatically.</string>
+    <string name="backup_restore_warning">Restoring replaces ALL current data on this device with the backup contents. You will be signed out.</string>
+    <string name="backup_safety_msg">Automatic copies taken just before each restore. Save one elsewhere if you need to undo a restore.</string>
+    <string name="backup_valid">Backup verified: checksum, schema and references are valid.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_back">Back</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_decrease">Decrease quantity for %1$s</string>
+    <string name="cd_increase">Increase quantity for %1$s</string>
+    <string name="cd_hide_pin">Hide PIN</string>
+    <string name="cd_show_pin">Show PIN</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_next_day">Next day</string>
+    <string name="cd_previous_day">Previous day</string>
+    <string name="cd_next_month">Next month</string>
+    <string name="cd_previous_month">Previous month</string>
+    <string name="cd_pdf_page">Page %1$d of %2$d</string>
+    <string name="cd_quantity_for">Quantity for %1$s</string>
+    <string name="cd_read_only">Read only</string>
+    <string name="cd_row_options">Options for %1$s</string>
+    <string name="cd_sales_chart">Sales chart, total %1$s</string>
+
+    <!-- Table columns -->
+    <string name="col_amount">Amount</string>
+    <string name="col_balance">Balance</string>
+    <string name="col_code">Code</string>
+    <string name="col_credit">Credit</string>
+    <string name="col_customer">Customer</string>
+    <string name="col_date">Date</string>
+    <string name="col_debit">Debit</string>
+    <string name="col_detail">Detail</string>
+    <string name="col_entries">Entries</string>
+    <string name="col_house">House</string>
+    <string name="col_invoice">Invoice</string>
+    <string name="col_mobile">Mobile</string>
+    <string name="col_product">Product</string>
+    <string name="col_quantity">Quantity</string>
+    <string name="col_rate">Rate</string>
+    <string name="col_status">Status</string>
+
+    <!-- Dashboard -->
+    <string name="dash_attention">Needs attention</string>
+    <string name="dash_greeting">Namaste, %1$s</string>
+    <string name="dash_last_14">Sales, last 14 days</string>
+    <string name="dash_no_entries_today">No deliveries recorded yet today.</string>
+    <string name="dash_progress">%1$d of %2$d regular customers entered</string>
+    <string name="dash_recent_payments">Recent payments</string>
+    <string name="dash_this_month">%1$s</string>
+    <string name="dash_today">Today</string>
+    <string name="dash_today_sales">Today\'s delivery value</string>
+
+    <!-- Dialogs -->
+    <string name="dlg_delete_rate_title">Remove scheduled rate?</string>
+    <string name="dlg_delete_rate_msg">%1$s from %2$s will be removed. Past rates cannot be deleted.</string>
+    <string name="dlg_duplicate_title">Possible duplicate payment</string>
+    <string name="dlg_duplicate_msg">%1$s was already recorded for this customer at %2$s. Record this payment again?</string>
+    <string name="dlg_finalize_all_title">Finalize bills</string>
+    <string name="dlg_finalize_all_msg">%1$d draft bills for %2$s will be issued with invoice numbers. Issued bills are not changed later; corrections create a revision.</string>
+    <string name="dlg_finalize_title">Finalize invoice</string>
+    <string name="dlg_finalize_msg">An invoice number will be issued and the amounts (due %1$s) will be frozen.</string>
+    <string name="dlg_lock_title">Lock %1$s?</string>
+    <string name="dlg_lock_msg">Deliveries, payments and adjustments dated in this month can no longer be added or changed until an Admin reopens it.</string>
+    <string name="dlg_lock_drafts_warning">Note: %1$d customers still have draft bills.</string>
+    <string name="dlg_logout_msg">You will need your PIN to sign in again.</string>
+    <string name="dlg_reauth_msg">Confirm with your own PIN to continue.</string>
+    <string name="dlg_remove_entries_title">Remove saved entries?</string>
+    <string name="dlg_remove_entries_msg">%1$d saved entries were cleared and will be deleted. This is recorded in the audit log.</string>
+    <string name="dlg_reopen_title">Reopen %1$s?</string>
+    <string name="dlg_reopen_msg">Reopening allows changes to a closed month. Give a reason; it is stored in the audit log.</string>
+    <string name="dlg_reset_pin_title">Reset PIN for %1$s</string>
+    <string name="dlg_restore_title">Restore backup?</string>
+    <string name="dlg_restore_msg">All current data will be replaced. A safety backup is created first. Enter your PIN to confirm.</string>
+    <string name="dlg_reverse_payment_title">Reverse payment?</string>
+    <string name="dlg_reverse_payment_msg">The payment of %1$s on %2$s will be marked reversed and removed from the balance. The record is kept for history.</string>
+    <string name="dlg_revise_title">Issue revised invoice</string>
+    <string name="dlg_revise_msg">%1$s will be marked superseded and a new numbered revision issued from current records.</string>
+    <string name="dlg_unsaved_title">Unsaved entries</string>
+    <string name="dlg_unsaved_msg">You have %1$d unsaved entries. Discard them?</string>
+    <string name="dlg_void_adjustment_title">Void adjustment?</string>
+    <string name="dlg_void_adjustment_msg">The adjustment of %1$s will no longer count toward the balance. The record is kept.</string>
+
+    <!-- Empty states -->
+    <string name="empty_bills">No bills for this month</string>
+    <string name="empty_bills_msg">Customers with deliveries, payments or balances appear here.</string>
+    <string name="empty_customers_title">No customers yet</string>
+    <string name="empty_customers_msg">Add your first customer to start recording deliveries.</string>
+    <string name="empty_day">Nothing recorded for this day</string>
+    <string name="empty_day_msg">Entries saved on the delivery screen appear here.</string>
+    <string name="empty_deliveries">No recent deliveries</string>
+    <string name="empty_deliveries_msg">The last 120 days of entries are shown here.</string>
+    <string name="empty_filter_title">Nothing to show</string>
+    <string name="empty_filter_msg">Everyone in this filter is done.</string>
+    <string name="empty_invoices">No finalized invoices</string>
+    <string name="empty_invoices_msg">Finalized monthly invoices and revisions appear here.</string>
+    <string name="empty_outstanding">No dues</string>
+    <string name="empty_outstanding_msg">Every customer is settled.</string>
+    <string name="empty_payments">No payments</string>
+    <string name="empty_payments_month">No payments recorded in this month.</string>
+    <string name="empty_payments_msg">Payments and adjustments for this customer appear here.</string>
+    <string name="empty_products_title">No products yet</string>
+    <string name="empty_products_msg">Add products such as milk, curd or ghee and set their rates.</string>
+    <string name="empty_range">No sales in this period</string>
+    <string name="empty_rates">No rates yet</string>
+    <string name="empty_rates_msg">Add a rate so deliveries can be priced.</string>
+    <string name="empty_search_msg">No customer matches your search.</string>
+    <string name="empty_statement_msg">No transactions in the selected dates.</string>
+
+    <!-- Errors -->
+    <string name="err_already_finalized">This month is already finalized for the customer. Use a revision to correct it.</string>
+    <string name="err_already_reversed">Already reversed.</string>
+    <string name="err_already_superseded">This invoice was already superseded.</string>
+    <string name="err_amount_invalid">Enter a valid amount (up to 2 decimals).</string>
+    <string name="err_amount_large">Amount is unusually large. Please check.</string>
+    <string name="err_amount_positive">Amount must be more than zero.</string>
+    <string name="err_auto_lock">Auto-lock must be between 0 and 240 minutes.</string>
+    <string name="err_backup_checksum">Backup file is damaged (checksum mismatch).</string>
+    <string name="err_backup_corrupt">This file is not a readable backup.</string>
+    <string name="err_backup_format">This file is not a Khodiyar Dairy Billing backup.</string>
+    <string name="err_backup_incomplete">Backup file is incomplete.</string>
+    <string name="err_backup_integrity">Backup has duplicate IDs or broken references and was not restored.</string>
+    <string name="err_backup_newer">Backup was made by a newer app version. Update the app first.</string>
+    <string name="err_backup_no_admin">Backup has no active Admin account and cannot be restored.</string>
+    <string name="err_backup_too_large">Backup file is too large.</string>
+    <string name="err_cannot_deactivate_self">You cannot deactivate your own account.</string>
+    <string name="err_code_format">Code may use letters, digits, / _ - (max 20).</string>
+    <string name="err_code_taken">Customer code %1$s is already used.</string>
+    <string name="err_constraint">This would create a duplicate or invalid record.</string>
+    <string name="err_duplicate_in_batch">The same entry appears twice.</string>
+    <string name="err_edit_others">You may only change entries you created.</string>
+    <string name="err_fix_rows">Fix the highlighted quantities before saving.</string>
+    <string name="err_future_date">Future dates are not allowed.</string>
+    <string name="err_future_period">This month has not started yet.</string>
+    <string name="err_generic">Something went wrong.</string>
+    <string name="err_inactive_record">%1$s or the product is inactive.</string>
+    <string name="err_invoice_prefix">Invoice prefix: 1–8 letters or digits.</string>
+    <string name="err_last_admin">At least one active Admin is required.</string>
+    <string name="err_login_inactive">This account is deactivated. Ask the Admin.</string>
+    <string name="err_login_invalid">Wrong username or PIN.</string>
+    <string name="err_login_locked">Too many attempts. Try again after %1$s.</string>
+    <string name="err_mobile_format">Enter a valid 10-digit mobile number.</string>
+    <string name="err_name_long">Name is too long.</string>
+    <string name="err_no_rate">No rate set for %1$s on %2$s.</string>
+    <string name="err_no_rate_short">No rate for this date</string>
+    <string name="err_no_share_app">No app on this phone can receive a PDF.</string>
+    <string name="err_no_whatsapp">WhatsApp is not installed. Use Share to pick another app.</string>
+    <string name="err_not_found">Record not found.</string>
+    <string name="err_not_locked">This month is not locked.</string>
+    <string name="err_not_permitted">Not permitted for your account</string>
+    <string name="err_not_signed_in">Please sign in again.</string>
+    <string name="err_opening_locked">Opening balance cannot change after invoices exist. Use an adjustment.</string>
+    <string name="err_past_not_permitted">You can only record today\'s deliveries.</string>
+    <string name="err_pdf_failed">Could not create PDF. %1$s</string>
+    <string name="err_pdf_unreadable">Generated PDF could not be opened.</string>
+    <string name="err_period_locked">%1$s is locked.</string>
+    <string name="err_pin_mismatch">PINs do not match.</string>
+    <string name="err_pin_weak">Use at least 6 characters, not repeated or sequential (e.g. not 123456).</string>
+    <string name="err_product_exists">A product with this name already exists.</string>
+    <string name="err_qty_invalid">Invalid quantity</string>
+    <string name="err_qty_large">Quantity is too large</string>
+    <string name="err_qty_negative">Quantity cannot be negative.</string>
+    <string name="err_qty_nodelivery">No-delivery entries must have zero quantity.</string>
+    <string name="err_qty_precision">Max %1$d decimal places for this unit</string>
+    <string name="err_qty_zero_delivered">Delivered quantity must be more than zero.</string>
+    <string name="err_rate_duplicate">A rate already exists from %1$s.</string>
+    <string name="err_rate_in_use">Only future (scheduled) rates can be removed.</string>
+    <string name="err_rate_large">Rate is unusually large. Please check.</string>
+    <string name="err_rate_positive">Rate must be more than zero.</string>
+    <string name="err_reason_required">Please give a reason.</string>
+    <string name="err_receipt_reversed">This payment was reversed; no receipt is available.</string>
+    <string name="err_required">Required</string>
+    <string name="err_required_code">Customer code is required.</string>
+    <string name="err_required_currency">Currency symbol is required.</string>
+    <string name="err_required_dairy_name">Dairy name is required.</string>
+    <string name="err_required_house">House / flat number is required.</string>
+    <string name="err_required_name">Name is required.</string>
+    <string name="err_required_unit_label">Enter a label for this unit.</string>
+    <string name="err_save_failed">Could not save the file.</string>
+    <string name="err_select_customer">Select a customer.</string>
+    <string name="err_setup_done">Setup was already completed.</string>
+    <string name="err_step_positive">Step must be more than zero.</string>
+    <string name="err_unexpected">Unexpected error: %1$s</string>
+    <string name="err_unit_locked">Unit cannot change after deliveries are recorded.</string>
+    <string name="err_username_format">Username: 3–32 lowercase letters, digits, . _ -</string>
+    <string name="err_username_taken">That username is already taken.</string>
+    <string name="err_wrong_pin">Incorrect PIN.</string>
+
+    <!-- Fields -->
+    <string name="field_active">Active</string>
+    <string name="field_address">Address</string>
+    <string name="field_amount">Amount</string>
+    <string name="field_auto_lock">Auto sign-out after inactivity (minutes)</string>
+    <string name="field_code">Customer code</string>
+    <string name="field_confirm_pin">Confirm PIN</string>
+    <string name="field_currency">Currency symbol</string>
+    <string name="field_current_pin">Current PIN</string>
+    <string name="field_customer_name">Customer name</string>
+    <string name="field_daily_qty">Usual daily quantity</string>
+    <string name="field_dairy_name">Dairy / shop name</string>
+    <string name="field_date">Date</string>
+    <string name="field_effective_from">Effective from</string>
+    <string name="field_from">From</string>
+    <string name="field_house">House / flat no.</string>
+    <string name="field_invoice_footer">Invoice footer</string>
+    <string name="field_invoice_header">Invoice header note</string>
+    <string name="field_invoice_prefix">Invoice prefix</string>
+    <string name="field_language">Language</string>
+    <string name="field_method">Payment method</string>
+    <string name="field_mobile">Mobile number</string>
+    <string name="field_new_pin">New PIN / password</string>
+    <string name="field_note_optional">Note (optional)</string>
+    <string name="field_notes">Notes</string>
+    <string name="field_opening_balance">Opening balance</string>
+    <string name="field_payment_date">Payment date</string>
+    <string name="field_payment_instructions">Payment instructions</string>
+    <string name="field_phone">Contact phone</string>
+    <string name="field_pin">PIN / password</string>
+    <string name="field_product_name">Product name</string>
+    <string name="field_rate_per">Rate per %1$s</string>
+    <string name="field_reason">Reason</string>
+    <string name="field_reference">Reference / UPI transaction ID</string>
+    <string name="field_route">Route order</string>
+    <string name="field_sessions">Morning &amp; evening sessions</string>
+    <string name="field_staff_name">Staff name</string>
+    <string name="field_step">+/− step</string>
+    <string name="field_theme">Theme</string>
+    <string name="field_to">To</string>
+    <string name="field_unit">Unit</string>
+    <string name="field_unit_label">Unit label</string>
+    <string name="field_upi">UPI ID (shown on bills)</string>
+    <string name="field_username">Username</string>
+    <string name="field_your_name">Your name</string>
+
+    <!-- Filters -->
+    <string name="filter_active">Active</string>
+    <string name="filter_all">All</string>
+    <string name="filter_all_count">All · %1$d</string>
+    <string name="filter_all_products">All products</string>
+    <string name="filter_attention">Needs review</string>
+    <string name="filter_done_count">Saved · %1$d</string>
+    <string name="filter_due">Due</string>
+    <string name="filter_inactive">Inactive</string>
+    <string name="filter_pending_count">Pending · %1$d</string>
+
+    <!-- Hints -->
+    <string name="hint_adjustment">Use a credit for discounts or corrections, a debit for extra charges. Adjustments appear on the bill.</string>
+    <string name="hint_auto_lock">0 keeps you signed in until you sign out.</string>
+    <string name="hint_daily_qty">Used by \"Fill usual quantities\"</string>
+    <string name="hint_deactivate">Deactivated customers keep all history and can be reactivated.</string>
+    <string name="hint_opening_balance">Amount owed before using this app. Use a minus sign for an advance.</string>
+    <string name="hint_payment_policy">Payments reduce the outstanding balance, settling the oldest dues first. A payment is counted in the month of its date.</string>
+    <string name="hint_permissions">Recording deliveries is always allowed. Staff can never manage users, settings or restore backups.</string>
+    <string name="hint_pick_customer">Search and pick a customer</string>
+    <string name="hint_pin">At least 6 characters. Never share it.</string>
+    <string name="hint_rate_history">Each delivery stores the rate used at entry, so rate changes never alter past records or issued invoices.</string>
+    <string name="hint_reference">Optional</string>
+    <string name="hint_route">Optional, sorts delivery list</string>
+    <string name="hint_search_customer">Search name, house, code or mobile</string>
+    <string name="hint_sessions">Record morning and evening deliveries separately.</string>
+    <string name="hint_step">Up to %1$d decimals</string>
+    <string name="hint_unit_label">e.g. box, tin</string>
+    <string name="hint_unit_locked">The unit can only change before any deliveries are recorded. Rates are managed on the product page.</string>
+    <string name="hint_username">Lowercase, used to sign in</string>
+
+    <!-- Labels -->
+    <string name="label_advance">Advance</string>
+    <string name="label_advance_balance">Advance balance</string>
+    <string name="label_advance_now">Advance balance now: %1$s</string>
+    <string name="label_backup_business">Business</string>
+    <string name="label_backup_by">Created by</string>
+    <string name="label_backup_created">Created on</string>
+    <string name="label_backup_deliveries">Delivery entries</string>
+    <string name="label_backup_invoices">Invoices</string>
+    <string name="label_backup_schema">Format</string>
+    <string name="label_charges_paid">Charges %1$s · Paid %2$s</string>
+    <string name="label_closing">Closing balance</string>
+    <string name="label_closing_dues">Closing dues</string>
+    <string name="label_count_customers">%1$d customers</string>
+    <string name="label_current_rate">Current rate</string>
+    <string name="label_daily_sales">Daily sales</string>
+    <string name="label_days_count">%1$d days</string>
+    <string name="label_due">Due</string>
+    <string name="label_from_date">From %1$s</string>
+    <string name="label_last_backup">Last backup</string>
+    <string name="label_missing_days">%1$d days without entry</string>
+    <string name="label_month_charges">Charges this month</string>
+    <string name="label_never">Never</string>
+    <string name="label_no_rate">No rate set</string>
+    <string name="label_opening_balance_value">Opening balance: %1$s</string>
+    <string name="label_opening_for_range">Balance at start</string>
+    <string name="label_outstanding">Outstanding</string>
+    <string name="label_outstanding_now">Outstanding now: %1$s</string>
+    <string name="label_reprice">Also re-price existing entries from this date in unlocked months (finalized invoices are not changed)</string>
+    <string name="label_reversed_reason">Reversed: %1$s</string>
+    <string name="label_saved_progress">%1$d of %2$d saved</string>
+    <string name="label_settled">Settled</string>
+    <string name="label_since">Since %1$s</string>
+    <string name="label_tap_save">Not saved until you tap Save all</string>
+    <string name="label_today">Today</string>
+    <string name="label_total">Total</string>
+    <string name="label_total_sales">Total sales</string>
+    <string name="label_unsaved_count">%1$d unsaved</string>
+    <string name="label_upcoming_rate">%1$s from %2$s</string>
+    <string name="label_usual">Usual: %1$s %2$s daily</string>
+    <string name="label_version">Version %1$s · works fully offline</string>
+    <string name="label_yesterday">Yesterday</string>
+    <string name="label_your_pin">Your PIN</string>
+
+    <!-- Login / setup -->
+    <string name="login_device_note">Accounts and data are stored only on this device</string>
+    <string name="login_subtitle">Sign in to continue</string>
+    <string name="setup_admin">Admin account</string>
+    <string name="setup_business">Business</string>
+    <string name="setup_offline_note">Everything stays on this phone. No internet or cloud account is used.</string>
+    <string name="setup_starter_hint">Milk, Curd, Paneer, Ghee — you set the rates</string>
+    <string name="setup_starter_products">Add common dairy products</string>
+    <string name="setup_subtitle">Set up your dairy and create the Admin account. There is no default password.</string>
+    <string name="setup_title">Welcome</string>
+
+    <!-- Payment methods -->
+    <string name="method_bank">Bank transfer</string>
+    <string name="method_cash">Cash</string>
+    <string name="method_other">Other</string>
+    <string name="method_upi">UPI</string>
+
+    <!-- Metrics -->
+    <string name="metric_collected">Collected</string>
+    <string name="metric_month_sales">Sales</string>
+    <string name="metric_outstanding">Outstanding receivables</string>
+    <string name="metric_outstanding_sub">%1$d customers have dues</string>
+    <string name="metric_receipts">Receipts</string>
+
+    <!-- Messages -->
+    <string name="msg_adjustment_added">Adjustment recorded</string>
+    <string name="msg_adjustment_voided">Adjustment voided</string>
+    <string name="msg_ask_admin">Ask your Admin to grant access.</string>
+    <string name="msg_auto_locked">Signed out after inactivity</string>
+    <string name="msg_backup_done">Backup saved (%1$d customers, %2$d entries). Copy it to another device too.</string>
+    <string name="msg_copied">Message copied</string>
+    <string name="msg_customer_activated">Customer reactivated</string>
+    <string name="msg_customer_deactivated">Customer deactivated</string>
+    <string name="msg_customer_saved">Customer saved</string>
+    <string name="msg_file_saved">Saved %1$s</string>
+    <string name="msg_finalized_count">%1$d invoices finalized</string>
+    <string name="msg_forgot_pin">Ask the Admin to reset your PIN from Staff accounts. If the only Admin PIN is lost, restore a backup whose PIN you know.</string>
+    <string name="msg_invoice_finalized">Invoice finalized</string>
+    <string name="msg_invoice_revised">Revised invoice issued</string>
+    <string name="msg_payment_already">This payment was already saved</string>
+    <string name="msg_payment_reversed">Payment reversed</string>
+    <string name="msg_payment_saved">Payment saved</string>
+    <string name="msg_payment_saved_for">received from %1$s</string>
+    <string name="msg_pdfs_exported">%1$d PDFs saved to the folder</string>
+    <string name="msg_period_locked">Month locked</string>
+    <string name="msg_period_reopened">Month reopened</string>
+    <string name="msg_pin_changed">PIN changed</string>
+    <string name="msg_pin_reset">PIN reset</string>
+    <string name="msg_prefilled">Prefilled %1$d entries — review and Save all</string>
+    <string name="msg_product_saved">Product saved</string>
+    <string name="msg_rate_added">Rate saved (%1$d entries re-priced)</string>
+    <string name="msg_rate_deleted">Scheduled rate removed</string>
+    <string name="msg_restore_done">Restore complete. Safety copy: %1$s</string>
+    <string name="msg_save_conflicts">%1$d entries changed elsewhere and were not overwritten. Review them.</string>
+    <string name="msg_save_first">Save or discard the unsaved entries first</string>
+    <string name="msg_saved_entries">%1$d entries saved</string>
+    <string name="msg_settings_saved">Settings saved</string>
+    <string name="msg_setup_done">Setup complete</string>
+    <string name="msg_staff_created">Staff account created</string>
+    <string name="msg_staff_updated">Staff account updated</string>
+
+    <!-- Notices -->
+    <string name="notice_draft_pdf">Draft — not an issued invoice. Finalize before sending as a final bill.</string>
+    <string name="notice_invoice_changed">Records changed after this invoice was issued (current due %1$s). Issue a revision to correct it.</string>
+    <string name="notice_missing_entries">%1$d regular customers have days with no entry this month.</string>
+    <string name="notice_month_locked">This month is locked. Records dated in it cannot change.</string>
+    <string name="notice_month_running">This month is still running; bills will change as deliveries are added.</string>
+    <string name="notice_needs_revision">%1$d finalized invoices differ from current records.</string>
+    <string name="notice_no_rate">%1$s has no rate for this date, so deliveries cannot be priced.</string>
+    <string name="notice_past_readonly">View only — your account cannot change entries for this date.</string>
+    <string name="notice_period_locked">This month is locked. Ask the Admin to reopen it for corrections.</string>
+    <string name="notice_share_manual">Sharing opens the app you choose. The bill is sent only when you send it there.</string>
+
+    <!-- PDF -->
+    <string name="pdf_adjustments">Adjustments</string>
+    <string name="pdf_advance">Advance (credit) balance</string>
+    <string name="pdf_amount">Amount</string>
+    <string name="pdf_amount_due">Amount due</string>
+    <string name="pdf_amount_received">Amount received</string>
+    <string name="pdf_balance_after">Outstanding as of print date</string>
+    <string name="pdf_bill_to">Bill to</string>
+    <string name="pdf_charges">Charges this month</string>
+    <string name="pdf_code">Code</string>
+    <string name="pdf_date">Date</string>
+    <string name="pdf_days">Days</string>
+    <string name="pdf_draft_invoice">DRAFT INVOICE</string>
+    <string name="pdf_draft_note">Draft for review - not a final bill</string>
+    <string name="pdf_generated">Computer-generated document</string>
+    <string name="pdf_house">House</string>
+    <string name="pdf_invoice">INVOICE</string>
+    <string name="pdf_invoice_no">Invoice no.</string>
+    <string name="pdf_item">Item</string>
+    <string name="pdf_method">Method</string>
+    <string name="pdf_mobile">Mobile</string>
+    <string name="pdf_no_deliveries">No deliveries in this billing month.</string>
+    <string name="pdf_of">of</string>
+    <string name="pdf_page">Page</string>
+    <string name="pdf_payment_info">Payment information</string>
+    <string name="pdf_payments">Payments received</string>
+    <string name="pdf_period">Billing month</string>
+    <string name="pdf_phone">Phone</string>
+    <string name="pdf_previous">Previous balance</string>
+    <string name="pdf_quantity">Quantity</string>
+    <string name="pdf_rate">Rate</string>
+    <string name="pdf_receipt">PAYMENT RECEIPT</string>
+    <string name="pdf_receipt_no">Receipt no.</string>
+    <string name="pdf_received_from">Received from</string>
+    <string name="pdf_reference">Reference</string>
+    <string name="pdf_revision_of">Revision of</string>
+    <string name="pdf_signature">Authorised signatory</string>
+    <string name="pdf_upi">UPI</string>
+
+    <!-- Permissions -->
+    <string name="perm_edit_past">Edit past and others\' deliveries</string>
+    <string name="perm_finalize">Finalize invoices</string>
+    <string name="perm_manage_customers">Add and edit customers</string>
+    <string name="perm_manage_rates">Change product rates</string>
+    <string name="perm_record_deliveries">Record deliveries</string>
+    <string name="perm_record_payments">Record payments</string>
+    <string name="perm_view_billing">View bills</string>
+    <string name="perm_view_reports">View reports and amounts</string>
+
+    <!-- Reports -->
+    <string name="report_customers">Customers</string>
+    <string name="report_monthly">Monthly</string>
+    <string name="report_outstanding">Outstanding</string>
+    <string name="report_sales">Sales</string>
+    <string name="report_statement">Statement</string>
+
+    <string name="role_admin">Admin</string>
+    <string name="role_staff">Staff</string>
+
+    <!-- Sections -->
+    <string name="section_accounts">Accounts</string>
+    <string name="section_adjustments">Adjustments</string>
+    <string name="section_appearance">Appearance</string>
+    <string name="section_business">Business profile</string>
+    <string name="section_collections_by_method">Collections by method</string>
+    <string name="section_customer_bills">Customer bills · %1$d</string>
+    <string name="section_delivery_billing">Delivery &amp; security</string>
+    <string name="section_entries">Entries · %1$d</string>
+    <string name="section_identity">Customer details</string>
+    <string name="section_initial_rate">Starting rate</string>
+    <string name="section_invoice">Invoice</string>
+    <string name="section_invoice_history">Invoice history</string>
+    <string name="section_pending_customers">Pending · %1$d</string>
+    <string name="section_permissions">Permissions</string>
+    <string name="section_product_totals">Product totals</string>
+    <string name="section_rate_history">Rate history</string>
+    <string name="section_safety_backups">Safety backups</string>
+    <string name="section_security">Security</string>
+    <string name="section_usual_delivery">Usual delivery</string>
+
+    <string name="security_limitations">PINs are stored only as salted PBKDF2 hashes and sessions are protected with an Android Keystore key. However, data lives on this phone: anyone with an unlocked, rooted or compromised device, or with a backup file, may be able to read business records. Keep a screen lock on the phone, keep backup files private, and remember accounts are not shared between phones.</string>
+
+    <string name="session_evening">Evening</string>
+    <string name="session_morning">Morning</string>
+    <string name="share_chooser_title">Share bill via</string>
+
+    <string name="sort_dues">Highest dues</string>
+    <string name="sort_house">House no.</string>
+    <string name="sort_name">Name</string>
+
+    <string name="staff_device_note">Accounts exist only on this phone. Another phone needs its own accounts and data.</string>
+
+    <string name="state_loading">Loading</string>
+    <string name="state_saved">Saved</string>
+    <string name="state_unsaved">Unsaved</string>
+
+    <!-- Status -->
+    <string name="status_active">Active</string>
+    <string name="status_credit">Advance</string>
+    <string name="status_current">Current</string>
+    <string name="status_delivered">Delivered</string>
+    <string name="status_draft">Draft</string>
+    <string name="status_finalized">Finalized</string>
+    <string name="status_inactive">Inactive</string>
+    <string name="status_locked">Locked</string>
+    <string name="status_missed">Missed</string>
+    <string name="status_needs_revision">Needs revision</string>
+    <string name="status_no_delivery">No delivery</string>
+    <string name="status_outstanding">Outstanding</string>
+    <string name="status_paid">Paid</string>
+    <string name="status_partial">Part paid</string>
+    <string name="status_past">Past</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_reversed">Reversed</string>
+    <string name="status_scheduled">Scheduled</string>
+    <string name="status_superseded">Superseded</string>
+    <string name="status_voided">Voided</string>
+
+    <string name="tab_bills">Invoices</string>
+    <string name="tab_deliveries">Deliveries</string>
+    <string name="tab_ledger">Ledger</string>
+    <string name="tab_payments">Payments</string>
+
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_system">System</string>
+
+    <string name="title_add_adjustment">Add adjustment</string>
+    <string name="title_add_customer">Add customer</string>
+    <string name="title_add_product">Add product</string>
+    <string name="title_edit_customer">Edit customer</string>
+    <string name="title_edit_product">Edit product</string>
+    <string name="title_edit_staff">Edit staff</string>
+    <string name="title_invoice">Invoice</string>
+    <string name="title_new_rate">New rate · %1$s</string>
+    <string name="title_pdf_preview">Bill PDF</string>
+    <string name="title_receipt">Payment receipt</string>
+
+    <!-- Units -->
+    <string name="unit_gram">Gram</string>
+    <string name="unit_kg">Kilogram</string>
+    <string name="unit_liter">Liter</string>
+    <string name="unit_ml">Milliliter</string>
+    <string name="unit_other">Other</string>
+    <string name="unit_packet">Packet</string>
+    <string name="unit_piece">Piece</string>
+
+    <!-- WhatsApp / share message -->
+    <string name="wa_greeting">Namaste %1$s,</string>
+    <string name="wa_ready">Your dairy bill for %1$s is ready.</string>
+    <string name="wa_ready_draft">Your draft dairy bill for %1$s (for review).</string>
+    <string name="wa_invoice_no">Invoice: %1$s</string>
+    <string name="wa_charges">Total charges: %1$s</string>
+    <string name="wa_previous">Previous balance: %1$s</string>
+    <string name="wa_adjustments">Adjustments: %1$s</string>
+    <string name="wa_payments">Payments received: %1$s</string>
+    <string name="wa_due">Amount due: %1$s</string>
+    <string name="wa_advance">Advance balance (no amount due): %1$s</string>
+    <string name="wa_upi">UPI: %1$s</string>
+    <string name="wa_attached">Please find your detailed bill attached.</string>
+    <string name="wa_thanks">Thank you,\n%1$s</string>
+    <string name="wa_receipt">Namaste %1$s,\nWe received %2$s on %3$s. Your receipt is attached.\nThank you,\n%4$s</string>
+
+    <!-- Warnings -->
+    <string name="warn_backup_old">Last backup was %1$s days ago.</string>
+    <string name="warn_last_month_bills">%1$s bills from last month need finalizing or revision.</string>
+    <string name="warn_never_backed_up">No backup has been made yet.</string>
+    <string name="warn_no_rate">No current rate: %1$s</string>
+    <string name="warn_pending_today">%1$s regular customers have no entry today.</string>
+</resources>
