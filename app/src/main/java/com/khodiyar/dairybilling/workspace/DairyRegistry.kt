@@ -54,6 +54,15 @@ class DairyRegistry(private val file: File, private val databaseDir: File, priva
         write(cur.copy(dairies = cur.dairies.map { if (it.id == id) it.copy(name = clean) else it }))
     }
 
+    /** Removes a dairy from the list. The open dairy cannot be removed; switch away from it first. */
+    @Synchronized
+    fun remove(id: String) {
+        val cur = _state.value
+        require(id != cur.activeId) { "Cannot remove the open dairy" }
+        if (cur.dairies.none { it.id == id }) return
+        write(cur.copy(dairies = cur.dairies.filter { it.id != id }))
+    }
+
     @Synchronized
     fun setActive(id: String) {
         val cur = _state.value

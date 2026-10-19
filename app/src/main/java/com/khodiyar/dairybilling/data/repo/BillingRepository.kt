@@ -72,6 +72,8 @@ data class InvoiceView(
     val paidState: PaidState,
     val locked: Boolean,
     val settings: AppSettingsEntity,
+    /** True when bill steps are switched off: a plain live bill, never labelled "draft". */
+    val simple: Boolean = false,
 ) {
     /** What the bill shows: the issued snapshot when finalized, otherwise the live draft. */
     val displayLines: List<InvoiceLine>

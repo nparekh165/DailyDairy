@@ -663,4 +663,17 @@
     <string name="dlg_add_dairy_title">Add a new dairy</string>
     <string name="dlg_add_dairy_msg">A new, empty dairy is created on this phone. Next you set up its admin login. Your other dairies are not changed.</string>
     <string name="err_dairy_exists">A dairy with this name already exists</string>
+    <string name="section_features">App features</string>
+    <string name="features_hint">Switch off what you do not need for a simpler app. Applies to this dairy only.</string>
+    <string name="feature_sign_in">Sign in with PIN when the app opens</string>
+    <string name="feature_sign_in_hint">Off: the app opens straight to the home screen, with no auto-lock. Anyone holding the phone can use it.</string>
+    <string name="feature_pin_actions">Ask PIN for important actions</string>
+    <string name="feature_pin_actions_hint">Restoring a backup, reversing a payment, finalizing bills and similar. Off: a simple confirmation.</string>
+    <string name="feature_billing_steps">Finalize, lock and revise bills</string>
+    <string name="feature_billing_steps_hint">Off: bills are always calculated live from deliveries and payments, with no draft or finalize steps.</string>
+    <string name="feature_advanced">Staff, audit log and advanced settings</string>
+    <string name="feature_advanced_hint">Off: hides Staff, Audit log, bill number prefix, currency, bill header and delivery sessions.</string>
+    <string name="dlg_delete_dairy_title">Delete %1$s?</string>
+    <string name="dlg_delete_dairy_msg">All customers, deliveries, bills and payments of this dairy will be deleted from this phone. This cannot be undone. Make a backup first if you may need it.</string>
+    <string name="msg_dairy_deleted">Dairy deleted</string>
 </resources>

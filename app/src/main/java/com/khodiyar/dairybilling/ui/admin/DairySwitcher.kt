@@ -23,6 +23,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.DeleteOutline
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.rounded.Storefront
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -53,6 +55,7 @@ import com.khodiyar.dairybilling.MainActivity
 import com.khodiyar.dairybilling.R
 import com.khodiyar.dairybilling.domain.AppException
 import com.khodiyar.dairybilling.ui.components.AppTextField
+import com.khodiyar.dairybilling.ui.components.ConfirmDialog
 import com.khodiyar.dairybilling.ui.components.InlineNotice
 import com.khodiyar.dairybilling.ui.components.ThinDivider
 import com.khodiyar.dairybilling.ui.components.Tone
@@ -104,6 +107,7 @@ fun DairySwitcherSheet(onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     var adding by remember { mutableStateOf(false) }
     var switching by remember { mutableStateOf(false) }
+    var deleting by remember { mutableStateOf<DairyProfile?>(null) }
 
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = AppTheme.colors.surface) {
         Column(Modifier.fillMaxWidth().navigationBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = Space.screen)) {
@@ -134,6 +138,10 @@ fun DairySwitcherSheet(onDismiss: () -> Unit) {
                             Icon(Icons.Rounded.CheckCircle, null, tint = AppTheme.colors.primary, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(4.dp))
                             Text(stringResource(R.string.dairy_current), style = MaterialTheme.typography.labelMedium, color = AppTheme.colors.primary)
+                        } else {
+                            IconButton(onClick = { deleting = d }, enabled = !switching) {
+                                Icon(Icons.Rounded.DeleteOutline, stringResource(R.string.action_delete), tint = AppTheme.colors.error)
+                            }
                         }
                     }
                 }
@@ -146,6 +154,21 @@ fun DairySwitcherSheet(onDismiss: () -> Unit) {
             }
             Spacer(Modifier.height(Space.l))
         }
+    }
+
+    deleting?.let { d ->
+        val deletedMsg = stringResource(R.string.msg_dairy_deleted)
+        ConfirmDialog(
+            title = stringResource(R.string.dlg_delete_dairy_title, dairyLabel(d)),
+            message = stringResource(R.string.dlg_delete_dairy_msg),
+            confirmLabel = stringResource(R.string.action_delete),
+            onConfirm = {
+                app.deleteDairy(d.id)
+                android.widget.Toast.makeText(context, deletedMsg, android.widget.Toast.LENGTH_SHORT).show()
+            },
+            onDismiss = { deleting = null },
+            destructive = true,
+        )
     }
 
     if (adding) AddDairyDialog(

@@ -1,4 +1,4 @@
-﻿package com.khodiyar.dairybilling.ui.delivery
+package com.khodiyar.dairybilling.ui.delivery
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -142,7 +142,7 @@ fun DeliveryScreen(navigate: (String) -> Unit) {
             AppTopBar(
                 title = stringResource(R.string.nav_daily_entry),
                 subtitle = s.product?.let { p ->
-                    p.name + "  Â·  " + (s.ratePaise?.let { Money.format(it, s.currency) + " / " + p.displayUnit } ?: stringResource(R.string.label_no_rate))
+                    p.name + "  ·  " + (s.ratePaise?.let { Money.format(it, s.currency) + " / " + p.displayUnit } ?: stringResource(R.string.label_no_rate))
                 },
                 actions = {
                     IconButton(onClick = { navigate(Routes.dailySummary(s.date.toEpochDay())) }) {
@@ -277,7 +277,7 @@ private fun DeliveryBottomBar(s: DeliveryUi, busy: Boolean, onSave: () -> Unit) 
                 } else {
                     val p = s.product
                     Text(
-                        if (p != null) Quantity.formatWithUnit(s.savedQuantityMilli, p.displayUnit) + "  Â·  " + Money.format(s.savedAmountPaise, s.currency) else "",
+                        if (p != null) Quantity.formatWithUnit(s.savedQuantityMilli, p.displayUnit) + "  ·  " + Money.format(s.savedAmountPaise, s.currency) else "",
                         style = AppType.money,
                     )
                     Text(stringResource(R.string.label_saved_progress, s.doneCount, s.totalCount), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
@@ -329,7 +329,7 @@ private fun DeliveryRowItem(
                     row.status == DeliveryStatus.MISSED -> StatusBadge(stringResource(R.string.status_missed), Tone.DANGER, Icons.Rounded.EventBusy)
                     else -> {
                         Text(
-                            row.customer.code + (row.amountPaise?.let { "  Â·  " + Money.format(it, currency) } ?: ""),
+                            row.customer.code + (row.amountPaise?.let { "  ·  " + Money.format(it, currency) } ?: ""),
                             style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, maxLines = 1,
                         )
                         if (row.existing != null && !row.dirty) {
@@ -342,7 +342,7 @@ private fun DeliveryRowItem(
         }
         if (!row.editable) {
             Text(
-                if (row.status == DeliveryStatus.DELIVERED) Quantity.formatWithUnit(row.existing?.quantityMilli ?: 0, product.displayUnit) else "â€”",
+                if (row.status == DeliveryStatus.DELIVERED) Quantity.formatWithUnit(row.existing?.quantityMilli ?: 0, product.displayUnit) else "—",
                 style = AppType.quantity, modifier = Modifier.padding(horizontal = Space.m),
             )
             Icon(Icons.Rounded.Lock, stringResource(R.string.cd_read_only), tint = AppTheme.ext.textTertiary, modifier = Modifier.padding(end = Space.s).size(18.dp))
@@ -352,7 +352,7 @@ private fun DeliveryRowItem(
                 unit = product.displayUnit,
                 onText = onText,
                 onStep = onStep,
-                placeholder = if (row.status == DeliveryStatus.NO_DELIVERY || row.status == DeliveryStatus.MISSED) "0" else "â€“",
+                placeholder = if (row.status == DeliveryStatus.NO_DELIVERY || row.status == DeliveryStatus.MISSED) "0" else "–",
                 customerName = row.customer.name,
             )
             Box {
@@ -370,7 +370,7 @@ private fun DeliveryRowItem(
     }
 }
 
-/** âˆ’ [ qty ] + with a numeric keyboard; Next moves to the following customer. */
+/** − [ qty ] + with a numeric keyboard; Next moves to the following customer. */
 @Composable
 fun QuantityStepper(text: String, unit: String, onText: (String) -> Unit, onStep: (Boolean) -> Unit, placeholder: String, customerName: String) {
     val focus = LocalFocusManager.current
@@ -441,7 +441,7 @@ private fun CustomerDaySheet(vm: DeliveryViewModel, customer: com.khodiyar.dairy
                 Spacer(Modifier.width(Space.m))
                 Column(Modifier.weight(1f)) {
                     Text(customer.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Text(customer.code + if (customer.mobile.isNotBlank()) "  Â·  ${customer.mobile}" else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+                    Text(customer.code + if (customer.mobile.isNotBlank()) "  ·  ${customer.mobile}" else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                 }
             }
             Spacer(Modifier.height(Space.l))
@@ -475,11 +475,11 @@ private fun CustomerDaySheet(vm: DeliveryViewModel, customer: com.khodiyar.dairy
                                     val next = if (up) cur + p.stepMilli else (cur - p.stepMilli).coerceAtLeast(0)
                                     values[p.id] = DraftEntry(if (next == 0L) "" else Quantity.format(next), DeliveryStatus.DELIVERED)
                                 },
-                                placeholder = "â€“",
+                                placeholder = "–",
                                 customerName = customer.name + " " + p.name,
                             )
                         } else {
-                            Text(if (v.text.isBlank()) "â€”" else v.text + " " + p.displayUnit, style = AppType.quantity)
+                            Text(if (v.text.isBlank()) "—" else v.text + " " + p.displayUnit, style = AppType.quantity)
                         }
                     }
                     if (editable) {

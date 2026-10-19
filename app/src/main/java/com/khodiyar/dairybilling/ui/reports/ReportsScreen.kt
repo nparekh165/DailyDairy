@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 
 package com.khodiyar.dairybilling.ui.reports
 
@@ -116,7 +116,7 @@ fun ReportsScreen(onBack: () -> Unit) {
     val vm = appViewModel { ReportsViewModel(it) }
     val tab by vm.tab.collectAsState()
     val settings by vm.settings.collectAsState()
-    val cur = settings?.currencySymbol ?: "â‚¹"
+    val cur = settings?.currencySymbol ?: "₹"
     val business = settings?.dairyName ?: ""
     val exporter = rememberExporter()
     val labels = pdfLabels()
@@ -145,7 +145,7 @@ fun ReportsScreen(onBack: () -> Unit) {
     fun currentDoc(): Pair<String, TableDocument>? = when (tab) {
         ReportTab.SALES -> range?.let { r ->
             "sales_${r.from}_${r.to}" to TableDocument(
-                salesTitle, Dates.formatDay(r.from) + " â€“ " + Dates.formatDay(r.to), business,
+                salesTitle, Dates.formatDay(r.from) + " – " + Dates.formatDay(r.to), business,
                 listOf(PdfColumn(hProduct, 2.5f), PdfColumn(hEntries, 1f, Align.RIGHT), PdfColumn(hQty, 1.5f, Align.RIGHT), PdfColumn(hAmount, 1.6f, Align.RIGHT)),
                 r.products.map { listOf(it.product.name, it.entries.toString(), Quantity.formatWithUnit(it.quantityMilli, it.product.displayUnit), Money.plain(it.amountPaise)) },
                 listOf(totalS, "", "", Money.plain(r.salesPaise)),
@@ -165,7 +165,7 @@ fun ReportsScreen(onBack: () -> Unit) {
         }
         ReportTab.STATEMENT -> statement?.let { st ->
             "statement_${st.customer.code}_${st.from}_${st.to}" to TableDocument(
-                stTitle + " â€” " + st.customer.name, "${st.customer.houseNo} Â· ${st.customer.code} Â· " + Dates.formatDay(st.from) + " â€“ " + Dates.formatDay(st.to), business,
+                stTitle + " — " + st.customer.name, "${st.customer.houseNo} · ${st.customer.code} · " + Dates.formatDay(st.from) + " – " + Dates.formatDay(st.to), business,
                 listOf(PdfColumn(hDate, 1.3f), PdfColumn(hDetail, 2.8f), PdfColumn(hDebit, 1.3f, Align.RIGHT), PdfColumn(hCredit, 1.3f, Align.RIGHT), PdfColumn(hBalance, 1.4f, Align.RIGHT)),
                 listOf(listOf(Dates.formatIso(st.from.toEpochDay()), hPrev, "", "", Money.plain(st.openingPaise))) +
                     st.lines.map { listOf(Dates.formatIso(it.date), it.description.ifBlank { it.kind.name }, if (it.debitPaise != 0L) Money.plain(it.debitPaise) else "", if (it.creditPaise != 0L) Money.plain(it.creditPaise) else "", Money.plain(it.balancePaise)) },
@@ -265,7 +265,7 @@ private fun SalesTab(vm: ReportsViewModel, r: RangeReport?, cur: String) {
         item {
             AppCard(Modifier.fillMaxWidth()) {
                 if (r.products.isEmpty()) Text(stringResource(R.string.empty_range), color = AppTheme.ext.textSecondary)
-                r.products.forEach { KeyValueRow(it.product.name + "  Â·  " + Quantity.formatWithUnit(it.quantityMilli, it.product.displayUnit), Money.format(it.amountPaise, cur)) }
+                r.products.forEach { KeyValueRow(it.product.name + "  ·  " + Quantity.formatWithUnit(it.quantityMilli, it.product.displayUnit), Money.format(it.amountPaise, cur)) }
             }
         }
         if (r.collectionsByMethod.isNotEmpty()) {
@@ -296,7 +296,7 @@ private fun MonthlyTab(vm: ReportsViewModel, data: Pair<MonthOverview, RangeRepo
             item {
                 AppCard(Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.section_product_totals), style = MaterialTheme.typography.titleSmall)
-                    r.products.forEach { KeyValueRow(it.product.name + "  Â·  " + Quantity.formatWithUnit(it.quantityMilli, it.product.displayUnit), Money.format(it.amountPaise, cur)) }
+                    r.products.forEach { KeyValueRow(it.product.name + "  ·  " + Quantity.formatWithUnit(it.quantityMilli, it.product.displayUnit), Money.format(it.amountPaise, cur)) }
                 }
             }
         }
@@ -377,7 +377,7 @@ private fun StatementTab(vm: ReportsViewModel, st: CustomerStatement?, customers
         item {
             AppCard(Modifier.fillMaxWidth(), onClick = { vm.customerId.value = 0 }) {
                 Text(st.customer.name, style = MaterialTheme.typography.titleMedium)
-                Text("${st.customer.houseNo} Â· ${st.customer.code}  Â·  " + stringResource(R.string.action_change_customer), style = MaterialTheme.typography.bodySmall, color = AppTheme.colors.primary)
+                Text("${st.customer.houseNo} · ${st.customer.code}  ·  " + stringResource(R.string.action_change_customer), style = MaterialTheme.typography.bodySmall, color = AppTheme.colors.primary)
                 Spacer(Modifier.height(Space.s))
                 KeyValueRow(stringResource(R.string.label_opening_for_range), Money.format(st.openingPaise, cur))
                 KeyValueRow(stringResource(R.string.label_closing), Money.format(st.closingPaise, cur), emphasize = true)
@@ -390,8 +390,8 @@ private fun StatementTab(vm: ReportsViewModel, st: CustomerStatement?, customers
                 Column(Modifier.weight(1f)) {
                     Text(l.description.ifBlank { l.kind.name }, style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(Dates.formatDay(l.date) + when (l.kind) {
-                        StatementLine.Kind.NO_DELIVERY -> "  Â·  " + stringResource(R.string.status_no_delivery)
-                        StatementLine.Kind.MISSED -> "  Â·  " + stringResource(R.string.status_missed)
+                        StatementLine.Kind.NO_DELIVERY -> "  ·  " + stringResource(R.string.status_no_delivery)
+                        StatementLine.Kind.MISSED -> "  ·  " + stringResource(R.string.status_missed)
                         else -> ""
                     }, style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                 }
@@ -399,7 +399,7 @@ private fun StatementTab(vm: ReportsViewModel, st: CustomerStatement?, customers
                     when {
                         l.creditPaise != 0L -> Text("- " + Money.format(l.creditPaise, cur), style = AppType.tableValue, color = AppTheme.ext.success)
                         l.debitPaise != 0L -> Text(Money.format(l.debitPaise, cur), style = AppType.tableValue)
-                        else -> Text("â€”", style = AppType.tableValue, color = AppTheme.ext.textTertiary)
+                        else -> Text("—", style = AppType.tableValue, color = AppTheme.ext.textTertiary)
                     }
                     Text(Money.format(l.balancePaise, cur), style = MaterialTheme.typography.labelSmall, color = AppTheme.ext.textSecondary)
                 }
@@ -425,7 +425,7 @@ private fun CustomersTab(customers: List<CustomerEntity>) {
                 Spacer(Modifier.width(Space.m))
                 Column(Modifier.weight(1f)) {
                     Text(c.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(c.code + if (c.mobile.isNotBlank()) "  Â·  " + c.mobile else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+                    Text(c.code + if (c.mobile.isNotBlank()) "  ·  " + c.mobile else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                 }
                 Text(stringResource(if (c.active) R.string.status_active else R.string.status_inactive), style = MaterialTheme.typography.labelMedium,
                     color = if (c.active) AppTheme.ext.success else AppTheme.ext.textTertiary)

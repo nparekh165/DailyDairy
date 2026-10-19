@@ -82,6 +82,7 @@ fun DashboardScreen(navigate: (String) -> Unit) {
     val prefs by vm.prefs.collectAsState()
     val cur = settings?.currencySymbol ?: "₹"
     val showMoney = vm.can(Permission.VIEW_REPORTS)
+    val billingSteps = com.khodiyar.dairybilling.ui.common.LocalFeatures.current.billingSteps
 
     LazyColumn(
         Modifier.fillMaxSize().background(AppTheme.colors.background),
@@ -119,7 +120,7 @@ fun DashboardScreen(navigate: (String) -> Unit) {
             if (dash.productsWithoutRate.isNotEmpty()) add(Triple(R.string.warn_no_rate, dash.productsWithoutRate.joinToString(), Routes.PRODUCTS))
             val pending = dash.expectedToday - dash.enteredToday
             if (pending > 0) add(Triple(R.string.warn_pending_today, pending.toString(), Routes.DELIVERY))
-            if (dash.lastMonthNeedsAttention > 0) add(Triple(R.string.warn_last_month_bills, dash.lastMonthNeedsAttention.toString(), Routes.BILLING))
+            if (billingSteps && dash.lastMonthNeedsAttention > 0) add(Triple(R.string.warn_last_month_bills, dash.lastMonthNeedsAttention.toString(), Routes.BILLING))
             if (vm.can(Permission.BACKUP)) {
                 val days = if (prefs.lastBackupAt == 0L) -1 else ((vm.now - prefs.lastBackupAt) / 86_400_000L).toInt()
                 if (days < 0 || days >= 7) add(Triple(if (days < 0) R.string.warn_never_backed_up else R.string.warn_backup_old, days.toString(), Routes.BACKUP))

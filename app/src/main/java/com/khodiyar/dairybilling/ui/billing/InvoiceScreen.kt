@@ -65,10 +65,11 @@ import com.khodiyar.dairybilling.ui.components.Tone
 import com.khodiyar.dairybilling.ui.theme.AppTheme
 import com.khodiyar.dairybilling.ui.theme.AppType
 import com.khodiyar.dairybilling.ui.theme.Space
+import kotlinx.coroutines.flow.combine
 
 class InvoiceViewModel(c: AppContainer, val customerId: Long, val periodKey: Int) : AppViewModel(c) {
     val period = Dates.fromPeriodKey(periodKey)
-    val view = c.billing.observeInvoice(customerId, period).stateInVm(null)
+    val view = combine(c.billing.observeInvoice(customerId, period), c.prefs.features) { v, f -> v?.forFeatures(f) }.stateInVm(null)
     fun can(p: Permission) = c.session.has(p)
     fun finalize() = action(success = UiText.res(R.string.msg_invoice_finalized)) { c.billing.finalize(customerId, period) }
     fun revise(reason: String) = action(success = UiText.res(R.string.msg_invoice_revised)) {
@@ -92,12 +93,12 @@ fun InvoiceScreen(customerId: Long, periodKey: Int, onBack: () -> Unit, navigate
         val cur = view.settings.currencySymbol
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = Space.screen)) {
             Row(horizontalArrangement = Arrangement.spacedBy(Space.s), verticalAlignment = Alignment.CenterVertically) {
-                when (view.state) {
+                if (!view.simple) when (view.state) {
                     BillState.DRAFT -> StatusBadge(stringResource(R.string.status_draft), Tone.NEUTRAL, Icons.Rounded.EditNote)
                     BillState.FINALIZED -> StatusBadge(stringResource(R.string.status_finalized), Tone.BRAND, Icons.Rounded.CheckCircle)
                     BillState.NEEDS_REVISION -> StatusBadge(stringResource(R.string.status_needs_revision), Tone.WARNING, Icons.Rounded.Warning)
                 }
-                if (view.invoice != null) when (view.paidState) {
+                if (view.invoice != null || view.simple) when (view.paidState) {
                     PaidState.PAID, PaidState.SETTLED -> StatusBadge(stringResource(R.string.status_paid), Tone.SUCCESS, Icons.Rounded.CheckCircle)
                     PaidState.PARTIALLY_PAID -> StatusBadge(stringResource(R.string.status_partial), Tone.ACCENT)
                     PaidState.CREDIT -> StatusBadge(stringResource(R.string.status_credit), Tone.INFO)
@@ -114,7 +115,7 @@ fun InvoiceScreen(customerId: Long, periodKey: Int, onBack: () -> Unit, navigate
             Spacer(Modifier.height(Space.l))
             PrimaryButton(stringResource(R.string.action_pdf_share), { navigate(Routes.invoicePdf(customerId, periodKey)) }, Modifier.fillMaxWidth(), icon = Icons.Rounded.PictureAsPdf)
             Spacer(Modifier.height(Space.s))
-            if (vm.can(Permission.FINALIZE_INVOICES) && !view.locked) {
+            if (!view.simple && vm.can(Permission.FINALIZE_INVOICES) && !view.locked) {
                 if (view.invoice == null) SecondaryButton(stringResource(R.string.action_finalize_invoice), { finalizing = true }, Modifier.fillMaxWidth(), icon = Icons.Rounded.CheckCircle)
                 else if (view.state == BillState.NEEDS_REVISION) SecondaryButton(stringResource(R.string.action_issue_revision), { revising = true }, Modifier.fillMaxWidth(), icon = Icons.Rounded.History)
             }
@@ -166,7 +167,7 @@ fun InvoicePreview(view: InvoiceView) {
                     if (view.settings.phone.isNotBlank()) Text(view.settings.phone, style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(stringResource(if (inv == null) R.string.pdf_draft_invoice else R.string.pdf_invoice), style = AppType.overline,
+                    Text(stringResource(if (inv == null && !view.simple) R.string.pdf_draft_invoice else R.string.pdf_invoice), style = AppType.overline,
                         color = if (inv == null) AppTheme.ext.accent else AppTheme.colors.primary)
                     Text(inv?.invoiceNumber ?: "—", style = MaterialTheme.typography.titleSmall)
                     Text(Dates.formatMonth(view.period), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)

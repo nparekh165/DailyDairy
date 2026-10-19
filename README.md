@@ -63,6 +63,17 @@ Alternatively use Android Studio → *Build → Generate Signed Bundle / APK*.
 2. Optionally create starter products (Milk, Curd, Paneer, Ghee) — **without rates**; set rates in *More → Products & rates*.
 3. Add customers (code, name, house/flat, mobile, opening balance, usual product & daily quantity, optional route order).
 
+## App features (simple mode)
+
+*Settings → App features* (Admin only) has four switches, all **on** by default and stored per dairy:
+
+| Switch | When off |
+|---|---|
+| Sign in with PIN when the app opens | Opens straight to the home screen as the owner (first active Admin); no auto-lock, no sign-out button. The Admin PIN still exists, so turning it back on works. |
+| Ask PIN for important actions | Restore, reverse payment, finalize etc. ask for a plain confirmation (and a reason where the record needs one). |
+| Finalize, lock and revise bills | Bills, PDFs and share text are always live from deliveries and payments, without draft labels. A month locked earlier can still be reopened. |
+| Staff, audit log and advanced settings | Hides Staff, Audit log, invoice prefix, currency, bill header and delivery sessions. Permission checks still run underneath. |
+
 ## Multiple dairies
 
 One phone can run several separate dairies (businesses): *More → Dairies → Add dairy*, or *Switch dairy* on the sign-in screen.

@@ -30,6 +30,15 @@ class DairyApp : Application() {
      * Opens another dairy. The caller restarts the activity afterwards so every screen and
      * ViewModel is rebuilt on the new dairy's database; nobody stays signed in across dairies.
      */
+    /** Permanently deletes another (not the open) dairy: its database and its safety backups. */
+    @Synchronized
+    fun deleteDairy(id: String) {
+        if (id == container.dairyId) return
+        registry.remove(id)
+        deleteDatabase(DairyRegistry.databaseName(id))
+        File(filesDir, if (id == DairyRegistry.MAIN) "safety_backups" else "safety_backups_$id").deleteRecursively()
+    }
+
     @Synchronized
     fun switchDairy(id: String) {
         if (id == container.dairyId) return

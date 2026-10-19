@@ -84,11 +84,14 @@ import com.khodiyar.dairybilling.ui.components.Tone
 import com.khodiyar.dairybilling.ui.theme.AppTheme
 import com.khodiyar.dairybilling.ui.theme.AppType
 import com.khodiyar.dairybilling.ui.theme.Space
+import com.khodiyar.dairybilling.ui.common.LocalFeatures
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.YearMonth
 
@@ -102,7 +105,9 @@ class BillingViewModel(c: AppContainer) : AppViewModel(c) {
     val currentMonth: YearMonth get() = YearMonth.from(c.time.today())
     val overview = month.flatMapLatest { c.billing.observeOverview(it) }.stateInVm(null)
     val settings = c.settings.observe().stateInVm(null)
-    val rows = combine(overview, filter, query) { ov, f, q ->
+    /** With bill steps switched off, every amount shown is the live one. */
+    private val simple = c.prefs.features.map { !it.billingSteps }
+    val rows = combine(overview, filter, query, simple) { ov, f, q, liveOnly ->
         val needle = q.trim().lowercase()
         ov?.rows?.filter { r ->
             when (f) {
@@ -110,7 +115,8 @@ class BillingViewModel(c: AppContainer) : AppViewModel(c) {
                 BillFilter.DRAFT -> r.state == BillState.DRAFT
                 BillFilter.FINALIZED -> r.state == BillState.FINALIZED
                 BillFilter.ATTENTION -> r.state == BillState.NEEDS_REVISION || r.missingDays > 0
-                BillFilter.DUE -> (r.invoice?.closingBalancePaise ?: r.summary.closingBalancePaise) > 0 && r.paidState != PaidState.PAID
+                BillFilter.DUE -> if (liveOnly) r.summary.closingBalancePaise > 0
+                    else (r.invoice?.closingBalancePaise ?: r.summary.closingBalancePaise) > 0 && r.paidState != PaidState.PAID
             }
         }?.filter { needle.isEmpty() || it.customer.name.lowercase().contains(needle) || it.customer.houseNo.lowercase().contains(needle) || it.customer.code.lowercase().contains(needle) }
     }.stateInVm(null)
@@ -126,13 +132,14 @@ class BillingViewModel(c: AppContainer) : AppViewModel(c) {
     /** Generates one PDF per customer into a user-chosen folder (Storage Access Framework). */
     fun exportAll(context: android.content.Context, tree: Uri, labels: PdfLabels, onlyFinalized: Boolean) = action {
         val ov = overview.value ?: return@action
+        val features = c.prefs.features.first()
         val dir = DocumentFile.fromTreeUri(context, tree) ?: throw com.khodiyar.dairybilling.domain.AppException(R.string.err_save_failed)
         var count = 0
         withContext(Dispatchers.IO) {
             for (row in ov.rows) {
                 if (onlyFinalized && row.invoice == null) continue
-                val view = c.billing.invoiceView(row.customer.id, ov.period) ?: continue
-                val layout = InvoicePdfBuilder.layout(view.toDocument(Dates.formatDay(c.time.today())), labels, AndroidPdfWriter.measurer)
+                val view = c.billing.invoiceView(row.customer.id, ov.period)?.forFeatures(features) ?: continue
+                val layout = InvoicePdfBuilder.layout(view.toDocument(Dates.formatDay(c.time.today())), labels.forView(view), AndroidPdfWriter.measurer)
                 val name = view.fileName()
                 dir.findFile(name)?.delete()
                 val file = dir.createFile("application/pdf", name.removeSuffix(".pdf")) ?: continue
@@ -147,9 +154,10 @@ class BillingViewModel(c: AppContainer) : AppViewModel(c) {
 
 @Composable
 fun billStateBadge(row: CustomerBillRow) {
+    val steps = LocalFeatures.current.billingSteps
     when {
-        row.state == BillState.NEEDS_REVISION -> StatusBadge(stringResource(R.string.status_needs_revision), Tone.WARNING, Icons.Rounded.Warning)
-        row.state == BillState.DRAFT -> StatusBadge(stringResource(R.string.status_draft), Tone.NEUTRAL, Icons.Rounded.EditNote)
+        steps && row.state == BillState.NEEDS_REVISION -> StatusBadge(stringResource(R.string.status_needs_revision), Tone.WARNING, Icons.Rounded.Warning)
+        steps && row.state == BillState.DRAFT -> StatusBadge(stringResource(R.string.status_draft), Tone.NEUTRAL, Icons.Rounded.EditNote)
         row.paidState == PaidState.PAID || row.paidState == PaidState.SETTLED -> StatusBadge(stringResource(R.string.status_paid), Tone.SUCCESS, Icons.Rounded.CheckCircle)
         row.paidState == PaidState.CREDIT -> StatusBadge(stringResource(R.string.status_credit), Tone.INFO, Icons.Rounded.Savings)
         row.paidState == PaidState.PARTIALLY_PAID -> StatusBadge(stringResource(R.string.status_partial), Tone.ACCENT, Icons.Rounded.HourglassTop)
@@ -176,6 +184,7 @@ fun BillingScreen(navigate: (String) -> Unit) {
     val labels = pdfLabels()
     var onlyFinal by remember { mutableStateOf(true) }
     val folder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri -> if (uri != null) vm.exportAll(context, uri, labels, onlyFinal) }
+    val steps = LocalFeatures.current.billingSteps
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
@@ -184,11 +193,12 @@ fun BillingScreen(navigate: (String) -> Unit) {
                 Box0 {
                     IconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, stringResource(R.string.cd_more_options)) }
                     DropdownMenu(menu, { menu = false }) {
-                        DropdownMenuItem({ Text(stringResource(R.string.action_export_all_pdfs)) }, { menu = false; onlyFinal = true; folder.launch(null) }, leadingIcon = { Icon(Icons.Rounded.FolderOpen, null) })
-                        DropdownMenuItem({ Text(stringResource(R.string.action_export_draft_pdfs)) }, { menu = false; onlyFinal = false; folder.launch(null) }, leadingIcon = { Icon(Icons.Rounded.FolderOpen, null) })
+                        DropdownMenuItem({ Text(stringResource(R.string.action_export_all_pdfs)) }, { menu = false; onlyFinal = steps; folder.launch(null) }, leadingIcon = { Icon(Icons.Rounded.FolderOpen, null) })
+                        if (steps) DropdownMenuItem({ Text(stringResource(R.string.action_export_draft_pdfs)) }, { menu = false; onlyFinal = false; folder.launch(null) }, leadingIcon = { Icon(Icons.Rounded.FolderOpen, null) })
                         if (vm.can(Permission.LOCK_PERIODS)) {
+                            // Reopen stays available with bill steps off, so a month locked earlier never stays stuck.
                             if (ov?.locked == true) DropdownMenuItem({ Text(stringResource(R.string.action_reopen_period)) }, { menu = false; confirmReopen = true }, leadingIcon = { Icon(Icons.Rounded.LockOpen, null) })
-                            else DropdownMenuItem({ Text(stringResource(R.string.action_lock_period)) }, { menu = false; confirmLock = true }, leadingIcon = { Icon(Icons.Rounded.Lock, null) })
+                            else if (steps) DropdownMenuItem({ Text(stringResource(R.string.action_lock_period)) }, { menu = false; confirmLock = true }, leadingIcon = { Icon(Icons.Rounded.Lock, null) })
                         }
                     }
                 }
@@ -216,22 +226,22 @@ fun BillingScreen(navigate: (String) -> Unit) {
                                 }
                             }
                         }
-                        Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
+                        if (steps) Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
                             MetricTile(stringResource(R.string.status_draft), o.draftCount.toString(), Modifier.weight(1f), icon = Icons.Rounded.EditNote)
                             MetricTile(stringResource(R.string.status_finalized), o.finalizedCount.toString(), Modifier.weight(1f), icon = Icons.Rounded.CheckCircle, tone = Tone.BRAND)
                         }
                         if (o.locked) InlineNotice(stringResource(R.string.notice_month_locked), Tone.WARNING, icon = Icons.Rounded.Lock)
-                        if (o.needsRevision > 0) InlineNotice(stringResource(R.string.notice_needs_revision, o.needsRevision), Tone.WARNING,
+                        if (steps && o.needsRevision > 0) InlineNotice(stringResource(R.string.notice_needs_revision, o.needsRevision), Tone.WARNING,
                             action = stringResource(R.string.action_review), onAction = { vm.filter.value = BillFilter.ATTENTION })
                         if (o.missingEntryCustomers > 0 && !o.locked) InlineNotice(stringResource(R.string.notice_missing_entries, o.missingEntryCustomers), Tone.INFO,
                             action = stringResource(R.string.action_review), onAction = { vm.filter.value = BillFilter.ATTENTION })
                         if (month >= vm.currentMonth) InlineNotice(stringResource(R.string.notice_month_running), Tone.INFO)
-                        if (vm.can(Permission.FINALIZE_INVOICES) && !o.locked && o.draftCount > 0) {
+                        if (steps && vm.can(Permission.FINALIZE_INVOICES) && !o.locked && o.draftCount > 0) {
                             PrimaryButton(stringResource(R.string.action_finalize_all, o.draftCount), { confirmFinalize = true }, Modifier.fillMaxWidth(), icon = Icons.Rounded.DoneAll, loading = busy)
                         }
                     }
                     AppSearchField(query, { vm.query.value = it }, stringResource(R.string.hint_search_customer))
-                    ChoiceChips(BillFilter.entries, filter, {
+                    ChoiceChips(if (steps) BillFilter.entries else listOf(BillFilter.ALL, BillFilter.ATTENTION, BillFilter.DUE), filter, {
                         when (it) {
                             BillFilter.ALL -> stringResource(R.string.filter_all)
                             BillFilter.DRAFT -> stringResource(R.string.status_draft)
@@ -258,7 +268,7 @@ fun BillingScreen(navigate: (String) -> Unit) {
                             if (row.missingDays > 0) Text(stringResource(R.string.label_missing_days, row.missingDays), style = MaterialTheme.typography.labelSmall, color = AppTheme.ext.warning)
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            val closing = row.invoice?.closingBalancePaise ?: row.summary.closingBalancePaise
+                            val closing = if (steps) row.invoice?.closingBalancePaise ?: row.summary.closingBalancePaise else row.summary.closingBalancePaise
                             Text(Money.format(kotlin.math.abs(closing), cur), style = AppType.money)
                             Text(stringResource(if (closing < 0) R.string.label_advance else R.string.label_due) + "  ·  " + Money.format(row.summary.chargesPaise, cur),
                                 style = MaterialTheme.typography.labelSmall, color = AppTheme.ext.textSecondary)

@@ -15,6 +15,7 @@ import com.khodiyar.dairybilling.security.Permission
 import com.khodiyar.dairybilling.security.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 sealed interface LoginResult {
@@ -128,6 +129,16 @@ class AuthRepository(
         session.start(updated)
         audit.log(AuditLogger.Actions.LOGIN, "user", user.id, "Signed in")
         return LoginResult.Success(updated)
+    }
+
+    /**
+     * The app has no sign-in screen: it always opens as the dairy's owner (the first active admin).
+     * Permission checks in the repositories still run, against that owner.
+     */
+    suspend fun signInOwner(): Boolean {
+        val owner = users.observeAll().first().firstOrNull { it.active && it.role == UserRole.ADMIN } ?: return false
+        session.start(owner)
+        return true
     }
 
     /** Resumes a session persisted inside the auto-lock window. */

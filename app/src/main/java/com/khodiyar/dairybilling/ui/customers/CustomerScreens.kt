@@ -1,4 +1,4 @@
-﻿package com.khodiyar.dairybilling.ui.customers
+package com.khodiyar.dairybilling.ui.customers
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -90,7 +90,7 @@ data class CustomerListUi(
     val query: String = "",
     val status: StatusFilter = StatusFilter.ACTIVE,
     val sort: CustomerSort = CustomerSort.HOUSE,
-    val currency: String = "â‚¹",
+    val currency: String = "₹",
 )
 
 class CustomerListViewModel(c: AppContainer) : AppViewModel(c) {
@@ -192,7 +192,7 @@ fun CustomerRow(c: CustomerEntity, balance: Long?, currency: String, onClick: ()
             Column(Modifier.weight(1f)) {
                 Text(c.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(c.code + if (c.mobile.isNotBlank()) "  Â·  ${c.mobile}" else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, maxLines = 1)
+                    Text(c.code + if (c.mobile.isNotBlank()) "  ·  ${c.mobile}" else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, maxLines = 1)
                     if (!c.active) {
                         Spacer(Modifier.width(Space.s))
                         StatusBadge(stringResource(R.string.status_inactive), Tone.NEUTRAL, Icons.Rounded.Block)
@@ -310,7 +310,7 @@ fun CustomerEditScreen(id: Long, onBack: () -> Unit, onSaved: (Long) -> Unit) {
             SectionHeader(stringResource(R.string.section_accounts), Modifier.padding(top = Space.m))
             AppCard(Modifier.fillMaxWidth()) {
                 AppTextField(
-                    opening, { opening = it }, stringResource(R.string.field_opening_balance), prefix = "â‚¹ ",
+                    opening, { opening = it }, stringResource(R.string.field_opening_balance), prefix = "₹ ",
                     keyboardType = KeyboardType.Text, enabled = id == 0L || vm.canEditOpening,
                     error = if (openingPaise == null) stringResource(R.string.err_amount_invalid) else null,
                     supporting = stringResource(R.string.hint_opening_balance),

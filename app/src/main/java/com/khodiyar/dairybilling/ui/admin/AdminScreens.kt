@@ -73,6 +73,7 @@ import com.khodiyar.dairybilling.BuildConfig
 import com.khodiyar.dairybilling.R
 import com.khodiyar.dairybilling.data.db.AppSettingsEntity
 import com.khodiyar.dairybilling.data.db.UserEntity
+import com.khodiyar.dairybilling.data.prefs.Features
 import com.khodiyar.dairybilling.data.prefs.ThemeMode
 import com.khodiyar.dairybilling.data.prefs.UiPrefs
 import com.khodiyar.dairybilling.domain.UiText
@@ -81,6 +82,7 @@ import com.khodiyar.dairybilling.domain.time.Dates
 import com.khodiyar.dairybilling.security.Permission
 import com.khodiyar.dairybilling.ui.Routes
 import com.khodiyar.dairybilling.ui.common.AppViewModel
+import com.khodiyar.dairybilling.ui.common.LocalFeatures
 import com.khodiyar.dairybilling.ui.common.appViewModel
 import com.khodiyar.dairybilling.ui.components.AppCard
 import com.khodiyar.dairybilling.ui.components.AppTextField
@@ -98,6 +100,7 @@ import com.khodiyar.dairybilling.ui.components.Tone
 import com.khodiyar.dairybilling.ui.theme.AppTheme
 import com.khodiyar.dairybilling.ui.theme.AppType
 import com.khodiyar.dairybilling.ui.theme.Space
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 // ---------------- More hub ----------------
@@ -116,13 +119,14 @@ fun MoreScreen(navigate: (String) -> Unit) {
     val settings by vm.settings.collectAsState()
     var confirmLogout by remember { mutableStateOf(false) }
     var dairies by remember { mutableStateOf(false) }
+    val features = LocalFeatures.current
     val entries = buildList {
         add(Triple(R.string.nav_payments, Icons.Rounded.Payments, Routes.PAYMENTS).takeIf { vm.can(Permission.RECORD_PAYMENTS) || vm.can(Permission.VIEW_REPORTS) })
         add(Triple(R.string.nav_reports, Icons.Rounded.Insights, Routes.REPORTS).takeIf { vm.can(Permission.VIEW_REPORTS) })
         add(Triple(R.string.nav_products, Icons.Rounded.Inventory2, Routes.PRODUCTS))
-        add(Triple(R.string.nav_staff, Icons.Rounded.ManageAccounts, Routes.STAFF).takeIf { vm.can(Permission.MANAGE_USERS) })
+        add(Triple(R.string.nav_staff, Icons.Rounded.ManageAccounts, Routes.STAFF).takeIf { features.advanced && vm.can(Permission.MANAGE_USERS) })
         add(Triple(R.string.nav_backup, Icons.Rounded.Backup, Routes.BACKUP).takeIf { vm.can(Permission.BACKUP) })
-        add(Triple(R.string.nav_audit, Icons.Rounded.Policy, Routes.AUDIT).takeIf { vm.can(Permission.VIEW_AUDIT) })
+        add(Triple(R.string.nav_audit, Icons.Rounded.Policy, Routes.AUDIT).takeIf { features.advanced && vm.can(Permission.VIEW_AUDIT) })
         add(Triple(R.string.nav_settings, Icons.Rounded.Settings, Routes.SETTINGS))
     }.filterNotNull()
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = Space.screen, end = Space.screen, bottom = Space.xxl)) {
@@ -143,7 +147,8 @@ fun MoreScreen(navigate: (String) -> Unit) {
                         Text(user?.displayName ?: "", style = MaterialTheme.typography.titleMedium)
                         Text("@${user?.username ?: ""}  ·  " + stringResource(if (user?.role == UserRole.ADMIN) R.string.role_admin else R.string.role_staff), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                     }
-                    TextButton(onClick = { confirmLogout = true }) {
+                    // With sign-in switched off there is nothing to sign out to.
+                    if (features.requireSignIn) TextButton(onClick = { confirmLogout = true }) {
                         Icon(Icons.AutoMirrored.Rounded.Logout, null, Modifier.size(18.dp))
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.action_logout))
@@ -309,11 +314,35 @@ private fun StaffDialog(user: UserEntity?, onDismiss: () -> Unit, onSave: (Strin
 
 // ---------------- Settings ----------------
 
+@Composable
+private fun FeatureSwitch(title: String, hint: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    Row(Modifier.fillMaxWidth().padding(top = Space.m), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyLarge)
+            Text(hint, style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+        }
+        Spacer(Modifier.width(Space.s))
+        Switch(checked, onChange)
+    }
+}
+
 class SettingsViewModel(c: AppContainer) : AppViewModel(c) {
     val settings = c.settings.observe().stateInVm(null)
     val prefs = c.prefs.prefs.stateInVm(UiPrefs())
     val canEdit get() = c.session.has(Permission.SETTINGS)
-    fun save(s: AppSettingsEntity) = action(success = UiText.res(R.string.msg_settings_saved)) { c.settings.update(s); c.dairyNamed(s.dairyName) }
+    fun save(s: AppSettingsEntity) = action(success = UiText.res(R.string.msg_settings_saved)) {
+        c.settings.update(s)
+        c.dairyNamed(s.dairyName)
+        if (!c.prefs.features.first().requireSignIn) c.session.autoLockMinutes = 0 // no auto-lock without sign-in
+    }
+
+    val features = c.prefs.features.stateInVm(Features())
+
+    /** Switching sign-in off also stops auto-lock; switching it on restores the saved auto-lock time. */
+    fun setFeatures(f: Features) = action {
+        c.prefs.setFeatures(f)
+        c.session.autoLockMinutes = if (f.requireSignIn) c.settings.get().autoLockMinutes else 0
+    }
     fun setTheme(t: ThemeMode) = viewModelScope.launch { c.prefs.setTheme(t) }
     fun changePin(current: String, new: String, onDone: () -> Unit) = action(success = UiText.res(R.string.msg_pin_changed)) { c.auth.changeOwnPin(current, new); onDone() }
 }
@@ -324,6 +353,7 @@ fun SettingsScreen(onBack: () -> Unit) {
     val st by vm.settings.collectAsState()
     val prefs by vm.prefs.collectAsState()
     val busy by vm.busy.collectAsState()
+    val feats by vm.features.collectAsState()
     var changingPin by remember { mutableStateOf(false) }
     Scaffold(contentWindowInsets = WindowInsets(0), topBar = { AppTopBar(stringResource(R.string.nav_settings), onBack = onBack) }) { padding ->
         val s = st
@@ -354,6 +384,16 @@ fun SettingsScreen(onBack: () -> Unit) {
                     when (it) { "en" -> "English"; "hi" -> "हिन्दी"; else -> stringResource(R.string.theme_system) }
                 }, { tag -> AppCompatDelegate.setApplicationLocales(if (tag.isEmpty()) LocaleListCompat.getEmptyLocaleList() else LocaleListCompat.forLanguageTags(tag)) })
             }
+            if (edit) {
+                SectionHeader(stringResource(R.string.section_features), Modifier.padding(top = Space.m))
+                AppCard(Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.features_hint), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+                    FeatureSwitch(stringResource(R.string.feature_sign_in), stringResource(R.string.feature_sign_in_hint), feats.requireSignIn) { vm.setFeatures(feats.copy(requireSignIn = it)) }
+                    FeatureSwitch(stringResource(R.string.feature_pin_actions), stringResource(R.string.feature_pin_actions_hint), feats.pinForActions) { vm.setFeatures(feats.copy(pinForActions = it)) }
+                    FeatureSwitch(stringResource(R.string.feature_billing_steps), stringResource(R.string.feature_billing_steps_hint), feats.billingSteps) { vm.setFeatures(feats.copy(billingSteps = it)) }
+                    FeatureSwitch(stringResource(R.string.feature_advanced), stringResource(R.string.feature_advanced_hint), feats.advanced) { vm.setFeatures(feats.copy(advanced = it)) }
+                }
+            }
             SectionHeader(stringResource(R.string.section_business), Modifier.padding(top = Space.m))
             AppCard(Modifier.fillMaxWidth()) {
                 AppTextField(name, { name = it }, stringResource(R.string.field_dairy_name), enabled = edit)
@@ -364,22 +404,24 @@ fun SettingsScreen(onBack: () -> Unit) {
             }
             SectionHeader(stringResource(R.string.section_invoice), Modifier.padding(top = Space.m))
             AppCard(Modifier.fillMaxWidth()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
+                if (feats.advanced) Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
                     AppTextField(prefix, { prefix = it.uppercase().take(8) }, stringResource(R.string.field_invoice_prefix), Modifier.weight(1f), enabled = edit,
                         supporting = "$prefix-2026-10-0001")
                     AppTextField(currency, { currency = it.take(4) }, stringResource(R.string.field_currency), Modifier.weight(1f), enabled = edit)
                 }
-                Spacer(Modifier.height(Space.s))
-                AppTextField(header, { header = it }, stringResource(R.string.field_invoice_header), singleLine = false, enabled = edit)
-                Spacer(Modifier.height(Space.s))
+                if (feats.advanced) {
+                    Spacer(Modifier.height(Space.s))
+                    AppTextField(header, { header = it }, stringResource(R.string.field_invoice_header), singleLine = false, enabled = edit)
+                    Spacer(Modifier.height(Space.s))
+                }
                 AppTextField(footer, { footer = it }, stringResource(R.string.field_invoice_footer), singleLine = false, enabled = edit)
                 Spacer(Modifier.height(Space.s))
                 AppTextField(instructions, { instructions = it }, stringResource(R.string.field_payment_instructions), singleLine = false, enabled = edit)
                 Spacer(Modifier.height(Space.s))
                 AppTextField(upi, { upi = it.trim() }, stringResource(R.string.field_upi), enabled = edit)
             }
-            SectionHeader(stringResource(R.string.section_delivery_billing), Modifier.padding(top = Space.m))
-            AppCard(Modifier.fillMaxWidth()) {
+            if (feats.advanced) SectionHeader(stringResource(R.string.section_delivery_billing), Modifier.padding(top = Space.m))
+            if (feats.advanced) AppCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
                         Text(stringResource(R.string.field_sessions), style = MaterialTheme.typography.bodyLarge)
@@ -388,7 +430,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                     Switch(sessions, { sessions = it }, enabled = edit)
                 }
                 Spacer(Modifier.height(Space.s))
-                AppTextField(autoLock, { autoLock = it.filter(Char::isDigit).take(3) }, stringResource(R.string.field_auto_lock), keyboardType = KeyboardType.Number, enabled = edit,
+                if (feats.requireSignIn) AppTextField(autoLock, { autoLock = it.filter(Char::isDigit).take(3) }, stringResource(R.string.field_auto_lock), keyboardType = KeyboardType.Number, enabled = edit,
                     supporting = stringResource(R.string.hint_auto_lock))
             }
             if (edit) {
@@ -398,8 +440,8 @@ fun SettingsScreen(onBack: () -> Unit) {
                         upiId = upi, currencySymbol = currency, invoicePrefix = prefix, sessionsEnabled = sessions, autoLockMinutes = autoLock.toIntOrNull() ?: 15))
                 }, Modifier.fillMaxWidth(), icon = Icons.Rounded.Save, loading = busy)
             }
-            SectionHeader(stringResource(R.string.section_security), Modifier.padding(top = Space.l))
-            AppCard(Modifier.fillMaxWidth()) {
+            if (feats.requireSignIn || feats.pinForActions) SectionHeader(stringResource(R.string.section_security), Modifier.padding(top = Space.l))
+            if (feats.requireSignIn || feats.pinForActions) AppCard(Modifier.fillMaxWidth()) {
                 PrimaryButton(stringResource(R.string.action_change_pin), { changingPin = true }, Modifier.fillMaxWidth(), icon = Icons.Rounded.Key)
                 Spacer(Modifier.height(Space.m))
                 Row(verticalAlignment = Alignment.Top) {

@@ -14,7 +14,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.compose.runtime.CompositionLocalProvider
+import com.khodiyar.dairybilling.data.prefs.Features
 import com.khodiyar.dairybilling.data.prefs.UiPrefs
+import com.khodiyar.dairybilling.ui.common.LocalFeatures
 import com.khodiyar.dairybilling.domain.UiText
 import com.khodiyar.dairybilling.ui.AppRoot
 import com.khodiyar.dairybilling.ui.theme.AppTheme
@@ -46,9 +49,12 @@ class MainActivity : AppCompatActivity() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleObserver)
         setContent {
             val prefs by container.prefs.prefs.collectAsState(initial = UiPrefs())
-            DairyTheme(prefs.theme) {
-                Box(Modifier.fillMaxSize().background(AppTheme.colors.background)) {
-                    AppRoot()
+            val features by container.prefs.features.collectAsState(initial = Features())
+            CompositionLocalProvider(LocalFeatures provides features) {
+                DairyTheme(prefs.theme) {
+                    Box(Modifier.fillMaxSize().background(AppTheme.colors.background)) {
+                        AppRoot()
+                    }
                 }
             }
         }

@@ -104,7 +104,7 @@ object InvoicePdfBuilder {
         if (doc.revisionOf != null) meta(labels.revisionOf, doc.revisionOf)
         l.y = maxOf(leftBottom, ry) + 6f
         if (doc.business.header.isNotBlank()) l.paragraph(doc.business.header, PdfStyles.SMALL)
-        if (doc.invoiceNumber == null) l.paragraph(labels.draftNote.uppercase(), PdfStyles.WATERMARK)
+        if (doc.invoiceNumber == null && labels.draftNote.isNotBlank()) l.paragraph(labels.draftNote.uppercase(), PdfStyles.WATERMARK)
         l.y += 4f
         l.line(l.left, l.y, l.right, l.y, PdfColors.BRAND, 1.4f)
         l.y += 14f

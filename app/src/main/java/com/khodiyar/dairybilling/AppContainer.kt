@@ -44,7 +44,7 @@ class AppContainer(
     val appContext: Context = context.applicationContext
     val db: AppDatabase = AppDatabase.build(appContext, dbName)
     val session = SessionManager(time)
-    val prefs = AppPreferences(appContext, KeystoreCipher())
+    val prefs = AppPreferences(appContext, KeystoreCipher(), dairyId)
     val audit = AuditLogger(db.audit(), session, time)
     val auth = AuthRepository(db, session, audit, time)
     val settings = SettingsRepository(db, session, audit, time)

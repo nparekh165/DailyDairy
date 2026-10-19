@@ -1,6 +1,7 @@
 package com.khodiyar.dairybilling.data.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -23,10 +24,41 @@ data class UiPrefs(
 )
 
 /**
- * DataStore holds only UI conveniences (theme, last backup time, remembered username) and an
- * encrypted session token. Business data lives exclusively in Room.
+ * Optional parts of the app the owner can switch off for a simpler app (Settings → App features).
+ * All are on by default. Stored per dairy.
  */
-class AppPreferences(private val context: Context, private val cipher: SecretCipher) {
+data class Features(
+    /** Sign in with username + PIN when the app opens, and auto-lock. Off: opens straight as the owner. */
+    val requireSignIn: Boolean = true,
+    /** Ask for the PIN before important actions (restore, reverse payment, finalize...). Off: a plain confirmation. */
+    val pinForActions: Boolean = true,
+    /** Draft/finalized bills with finalize, lock, reopen and revisions. Off: bills are always live. */
+    val billingSteps: Boolean = true,
+    /** Staff, Audit log and advanced settings. */
+    val advanced: Boolean = true,
+)
+
+/**
+ * DataStore holds only UI conveniences (theme, last backup time, remembered username), the
+ * per-dairy feature switches and an encrypted session token. Business data lives exclusively in Room.
+ */
+class AppPreferences(private val context: Context, private val cipher: SecretCipher, dairyId: String = "main") {
+    private val signInKey = booleanPreferencesKey("f_sign_in_$dairyId")
+    private val pinActionsKey = booleanPreferencesKey("f_pin_actions_$dairyId")
+    private val billingStepsKey = booleanPreferencesKey("f_billing_steps_$dairyId")
+    private val advancedKey = booleanPreferencesKey("f_advanced_$dairyId")
+
+    val features: Flow<Features> = context.dataStore.data.map { p ->
+        Features(p[signInKey] ?: true, p[pinActionsKey] ?: true, p[billingStepsKey] ?: true, p[advancedKey] ?: true)
+    }
+
+    suspend fun setFeatures(f: Features) = context.dataStore.edit {
+        it[signInKey] = f.requireSignIn
+        it[pinActionsKey] = f.pinForActions
+        it[billingStepsKey] = f.billingSteps
+        it[advancedKey] = f.advanced
+    }
+
     private val themeKey = intPreferencesKey("theme")
     private val lastBackupKey = longPreferencesKey("last_backup_at")
     private val lastUserKey = stringPreferencesKey("last_username")

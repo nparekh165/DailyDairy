@@ -7,6 +7,7 @@ import com.khodiyar.dairybilling.AppContainer
 import com.khodiyar.dairybilling.data.db.AppDatabase
 import com.khodiyar.dairybilling.domain.AppException
 import com.khodiyar.dairybilling.workspace.DairyRegistry
+import kotlinx.coroutines.flow.first
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -61,6 +62,43 @@ class DairyRegistryTest {
         File(dir, "dairies.json").delete()
         val healed = registry()
         assertEquals(setOf(DairyRegistry.MAIN, a.id), healed.state.value.dairies.map { it.id }.toSet())
+    }
+
+    @Test fun removeDropsDairyButNeverTheOpenOne() {
+        val r = registry()
+        val a = r.add("A")
+        r.remove(a.id)
+        assertEquals(listOf(DairyRegistry.MAIN), r.state.value.dairies.map { it.id })
+        try { r.remove(DairyRegistry.MAIN); fail("removed the open dairy") } catch (e: IllegalArgumentException) { }
+        assertEquals(listOf(DairyRegistry.MAIN), registry().state.value.dairies.map { it.id })
+    }
+
+    @Test fun appOpensAsOwnerWithoutSignIn() = kotlinx.coroutines.runBlocking {
+        val env = TestEnv()
+        try {
+            assertEquals(false, env.auth.signInOwner()) // nothing set up yet
+            env.setupAdmin()
+            env.auth.logout()
+            assertTrue(env.auth.signInOwner())
+            assertEquals(com.khodiyar.dairybilling.domain.model.UserRole.ADMIN, env.session.current?.role)
+        } finally {
+            env.close()
+        }
+    }
+
+    @Test fun featureSwitchesDefaultOnAndArePerDairy() = kotlinx.coroutines.runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val cipher = object : com.khodiyar.dairybilling.security.SecretCipher {
+            override fun encrypt(plain: ByteArray) = String(plain)
+            override fun decrypt(token: String) = token.toByteArray()
+        }
+        val a = com.khodiyar.dairybilling.data.prefs.AppPreferences(context, cipher, "feat_a")
+        val b = com.khodiyar.dairybilling.data.prefs.AppPreferences(context, cipher, "feat_b")
+        assertEquals(com.khodiyar.dairybilling.data.prefs.Features(), a.features.first())
+        val simple = com.khodiyar.dairybilling.data.prefs.Features(requireSignIn = false, pinForActions = false, billingSteps = false, advanced = false)
+        a.setFeatures(simple)
+        assertEquals(simple, a.features.first())
+        assertEquals(com.khodiyar.dairybilling.data.prefs.Features(), b.features.first())
     }
 
     @Test fun corruptListFileFallsBackSafely() {

@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 
 package com.khodiyar.dairybilling.ui.customers
 
@@ -98,7 +98,7 @@ class CustomerProfileViewModel(c: AppContainer, val id: Long) : AppViewModel(c) 
     val payments = c.payments.observeForCustomer(id).stateInVm(emptyList())
     val adjustments = c.payments.observeAdjustments(id).stateInVm(emptyList())
     val invoices = c.billing.observeInvoicesForCustomer(id).stateInVm(emptyList())
-    val products = combine(c.products.observeAll(), c.settings.observe()) { p, s -> p.associateBy { it.id } to s.currencySymbol }.stateInVm(emptyMap<Long, com.khodiyar.dairybilling.data.db.ProductEntity>() to "â‚¹")
+    val products = combine(c.products.observeAll(), c.settings.observe()) { p, s -> p.associateBy { it.id } to s.currencySymbol }.stateInVm(emptyMap<Long, com.khodiyar.dairybilling.data.db.ProductEntity>() to "₹")
     val now: LocalDate get() = c.time.today()
     fun can(p: Permission) = c.session.has(p)
 
@@ -138,7 +138,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
     Scaffold(
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            AppTopBar(c?.name ?: "", subtitle = c?.let { "${it.code} Â· ${it.houseNo}" }, onBack = onBack, actions = {
+            AppTopBar(c?.name ?: "", subtitle = c?.let { "${it.code} · ${it.houseNo}" }, onBack = onBack, actions = {
                 if (c != null && c.mobile.isNotBlank()) IconButton(onClick = { ShareHelper.dial(context, c.mobile) }) { Icon(Icons.Rounded.Call, stringResource(R.string.action_call)) }
                 if (vm.can(Permission.MANAGE_CUSTOMERS)) IconButton(onClick = { navigate(Routes.customerEdit(id)) }) { Icon(Icons.Rounded.Edit, stringResource(R.string.action_edit)) }
             })
@@ -154,7 +154,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
                             Spacer(Modifier.width(Space.m))
                             Column(Modifier.weight(1f)) {
                                 Text(c.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                                Text(listOf(c.code, c.mobile).filter { it.isNotBlank() }.joinToString("  Â·  "), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+                                Text(listOf(c.code, c.mobile).filter { it.isNotBlank() }.joinToString("  ·  "), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                             }
                             if (!c.active) StatusBadge(stringResource(R.string.status_inactive), Tone.NEUTRAL, Icons.Rounded.Block)
                         }
@@ -166,7 +166,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
                             Spacer(Modifier.height(Space.l))
                             val out = ledger?.outstandingPaise
                             Text(stringResource(if ((out ?: 0) < 0) R.string.label_advance_balance else R.string.label_outstanding).uppercase(), style = AppType.overline, color = AppTheme.ext.textSecondary)
-                            Text(out?.let { Money.format(kotlin.math.abs(it), cur) } ?: "â€¦", style = AppType.moneyLarge,
+                            Text(out?.let { Money.format(kotlin.math.abs(it), cur) } ?: "…", style = AppType.moneyLarge,
                                 color = if ((out ?: 0) > 0) AppTheme.colors.onSurface else AppTheme.ext.success)
                         }
                         if (c.defaultProductId != null && c.defaultQuantityMilli > 0) {
@@ -233,7 +233,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
                         Row(Modifier.fillMaxWidth().padding(horizontal = Space.screen, vertical = Space.s), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
                                 Text(Dates.formatDayShort(LocalDate.ofEpochDay(e.date)), style = MaterialTheme.typography.titleSmall)
-                                Text((p?.name ?: "") + if (showMoney && e.status == DeliveryStatus.DELIVERED) "  Â·  " + Money.format(e.ratePaise, cur) + " / " + (p?.displayUnit ?: "") else "",
+                                Text((p?.name ?: "") + if (showMoney && e.status == DeliveryStatus.DELIVERED) "  ·  " + Money.format(e.ratePaise, cur) + " / " + (p?.displayUnit ?: "") else "",
                                     style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                             }
                             when (e.status) {
@@ -261,7 +261,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
                         Row(Modifier.fillMaxWidth().padding(horizontal = Space.screen, vertical = Space.s), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
                                 Text(a.reason, style = MaterialTheme.typography.titleSmall, maxLines = 2)
-                                Text(Dates.formatDay(a.date) + "  Â·  " + stringResource(if (a.type == AdjustmentType.CREDIT) R.string.adj_credit else R.string.adj_debit),
+                                Text(Dates.formatDay(a.date) + "  ·  " + stringResource(if (a.type == AdjustmentType.CREDIT) R.string.adj_credit else R.string.adj_debit),
                                     style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                             }
                             Column(horizontalAlignment = Alignment.End) {
@@ -283,7 +283,7 @@ fun CustomerProfileScreen(id: Long, onBack: () -> Unit, navigate: (String) -> Un
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
                                     Text(inv.invoiceNumber, style = MaterialTheme.typography.titleSmall)
-                                    Text(Dates.formatMonth(Dates.fromPeriodKey(inv.periodKey)) + "  Â·  " + Dates.formatDateTime(inv.finalizedAt), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
+                                    Text(Dates.formatMonth(Dates.fromPeriodKey(inv.periodKey)) + "  ·  " + Dates.formatDateTime(inv.finalizedAt), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
                                 }
                                 Column(horizontalAlignment = Alignment.End) {
                                     Text(Money.format(inv.closingBalancePaise, cur), style = AppType.money)
@@ -334,7 +334,7 @@ fun PaymentRow(p: PaymentEntity, cur: String, title: String? = null, subtitle: S
             Column(Modifier.weight(1f)) {
                 Text(title ?: Dates.formatDay(p.date), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    (subtitle ?: "") + methodLabel(p.method) + if (p.reference.isNotBlank()) "  Â·  ${p.reference}" else "",
+                    (subtitle ?: "") + methodLabel(p.method) + if (p.reference.isNotBlank()) "  ·  ${p.reference}" else "",
                     style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 if (!active) Text(stringResource(R.string.label_reversed_reason, p.reversalReason), style = MaterialTheme.typography.bodySmall, color = AppTheme.colors.error, maxLines = 2)

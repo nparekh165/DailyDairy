@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
+@file:OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
 
 package com.khodiyar.dairybilling.ui.theme
 
@@ -30,7 +30,7 @@ import com.khodiyar.dairybilling.R
 import com.khodiyar.dairybilling.data.prefs.ThemeMode
 
 /*
- * DESIGN SYSTEM â€” "Fresh Dairy"
+ * DESIGN SYSTEM — "Fresh Dairy"
  * Clean milk-white surfaces, a deep dairy-green brand, a single warm ghee-gold accent used sparingly.
  * Status always pairs color with an icon and a text label.
  */

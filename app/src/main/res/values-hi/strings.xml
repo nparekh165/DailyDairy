@@ -636,4 +636,17 @@
     <string name="dlg_add_dairy_title">नई डेयरी जोड़ें</string>
     <string name="dlg_add_dairy_msg">इस फ़ोन पर एक नई खाली डेयरी बनेगी। इसके बाद आप उसका एडमिन लॉगिन बनाएँगे। आपकी बाकी डेयरियाँ नहीं बदलेंगी।</string>
     <string name="err_dairy_exists">इस नाम की डेयरी पहले से है</string>
+    <string name="section_features">ऐप की सुविधाएँ</string>
+    <string name="features_hint">ऐप आसान बनाने के लिए जो ज़रूरी नहीं, उसे बंद करें। यह सिर्फ़ इस डेयरी पर लागू होता है।</string>
+    <string name="feature_sign_in">ऐप खोलते समय PIN से साइन इन</string>
+    <string name="feature_sign_in_hint">बंद: ऐप सीधे होम स्क्रीन पर खुलेगा, ऑटो-लॉक नहीं होगा। फ़ोन हाथ में होने पर कोई भी उपयोग कर सकता है।</string>
+    <string name="feature_pin_actions">ज़रूरी कामों के लिए PIN पूछें</string>
+    <string name="feature_pin_actions_hint">बैकअप वापस लाना, भुगतान उलटना, बिल फ़ाइनल करना आदि। बंद: सिर्फ़ एक पुष्टि।</string>
+    <string name="feature_billing_steps">बिल फ़ाइनल, लॉक और संशोधन</string>
+    <string name="feature_billing_steps_hint">बंद: बिल हमेशा डिलीवरी और भुगतान से अपने-आप बनता है, ड्राफ्ट या फ़ाइनल करने का कदम नहीं।</string>
+    <string name="feature_advanced">स्टाफ, ऑडिट लॉग और उन्नत सेटिंग</string>
+    <string name="feature_advanced_hint">बंद: स्टाफ, ऑडिट लॉग, बिल नंबर प्रीफ़िक्स, मुद्रा, बिल हेडर और डिलीवरी सत्र छिपते हैं।</string>
+    <string name="dlg_delete_dairy_title">%1$s हटाएँ?</string>
+    <string name="dlg_delete_dairy_msg">इस डेयरी के सभी ग्राहक, डिलीवरी, बिल और भुगतान इस फ़ोन से हट जाएँगे। यह वापस नहीं होगा। ज़रूरत हो तो पहले बैकअप बना लें।</string>
+    <string name="msg_dairy_deleted">डेयरी हटा दी गई</string>
 </resources>

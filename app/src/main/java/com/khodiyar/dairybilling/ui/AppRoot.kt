@@ -87,6 +87,7 @@ import com.khodiyar.dairybilling.ui.reports.ReportsScreen
 import com.khodiyar.dairybilling.ui.theme.AppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 enum class Phase { LOADING, SETUP, LOGIN, MAIN }
@@ -108,6 +109,11 @@ class RootViewModel(c: AppContainer) : AppViewModel(c) {
             if (!setup && c.session.current == null) {
                 val settings = c.settings.get()
                 c.dairyNamed(settings.dairyName) // fills in the dairy list name for installs made before multi-dairy
+                if (!c.prefs.features.first().requireSignIn) {
+                    // Sign-in switched off (Settings → App features): open straight as the owner, no auto-lock.
+                    c.session.autoLockMinutes = 0
+                    if (c.auth.signInOwner()) { needsSetup.value = false; return@launch }
+                }
                 c.session.autoLockMinutes = settings.autoLockMinutes
                 c.prefs.readSession()?.let { (userId, lastActive) ->
                     val window = settings.autoLockMinutes * 60_000L

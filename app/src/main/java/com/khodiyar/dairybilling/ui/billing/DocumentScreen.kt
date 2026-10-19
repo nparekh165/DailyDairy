@@ -70,6 +70,7 @@ import com.khodiyar.dairybilling.ui.theme.AppTheme
 import com.khodiyar.dairybilling.ui.theme.Space
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -104,14 +105,15 @@ class DocumentViewModel(c: AppContainer, private val kind: String, private val a
 
     private suspend fun invoice(context: android.content.Context, labels: PdfLabels): DocState {
         val period = Dates.fromPeriodKey(b.toInt())
-        val view = c.billing.invoiceView(a, period, cId) ?: throw AppException(R.string.err_not_found)
-        val layout = InvoicePdfBuilder.layout(view.toDocument(Dates.formatDay(c.time.today())), labels, AndroidPdfWriter.measurer)
+        val view = c.billing.invoiceView(a, period, cId)?.forFeatures(c.prefs.features.first()) ?: throw AppException(R.string.err_not_found)
+        val layout = InvoicePdfBuilder.layout(view.toDocument(Dates.formatDay(c.time.today())), labels.forView(view), AndroidPdfWriter.measurer)
         val file = DocumentFiles.newFile(context, view.fileName())
         AndroidPdfWriter.write(layout, file)
         if (AndroidPdfWriter.verify(file) == 0) throw AppException(R.string.err_pdf_unreadable)
         view.invoice?.let { c.billing.markPdfGenerated(it.id) }
-        return DocState.Ready(file, AndroidPdfWriter.renderPages(file, 1080), view.invoice?.invoiceNumber ?: context.getString(R.string.pdf_draft_invoice),
-            view.shareMessage(context), view.invoice?.mobile ?: view.customer.mobile, view.invoice == null)
+        return DocState.Ready(file, AndroidPdfWriter.renderPages(file, 1080),
+            view.invoice?.invoiceNumber ?: context.getString(if (view.simple) R.string.pdf_invoice else R.string.pdf_draft_invoice),
+            view.shareMessage(context), view.invoice?.mobile ?: view.customer.mobile, view.invoice == null && !view.simple)
     }
 
     private suspend fun receipt(context: android.content.Context, labels: PdfLabels, methodName: (com.khodiyar.dairybilling.domain.model.PaymentMethod) -> String): DocState {

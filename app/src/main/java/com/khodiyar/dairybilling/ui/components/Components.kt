@@ -110,6 +110,7 @@ import com.khodiyar.dairybilling.R
 import com.khodiyar.dairybilling.domain.UiText
 import com.khodiyar.dairybilling.domain.money.Money
 import com.khodiyar.dairybilling.domain.time.Dates
+import com.khodiyar.dairybilling.ui.common.LocalFeatures
 import com.khodiyar.dairybilling.ui.theme.AppTheme
 import com.khodiyar.dairybilling.ui.theme.AppType
 import com.khodiyar.dairybilling.ui.theme.Radius
@@ -707,7 +708,45 @@ fun ConfirmDialog(
     )
 }
 
-/** Re-authentication gate for destructive actions: asks for the signed-in user's PIN. */
+/** [PinConfirmDialog] when "Ask PIN for important actions" is switched off: one confirmation tap, plus a reason where needed. */
+@Composable
+private fun PlainConfirmDialog(
+    title: String,
+    message: String,
+    confirmLabel: String,
+    onConfirmed: () -> Unit,
+    onDismiss: () -> Unit,
+    requireReason: Boolean,
+    reasonLabel: String,
+    onConfirmedWithReason: ((String) -> Unit)?,
+) {
+    var reason by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+    val needReason = stringResource(R.string.err_reason_required)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title, style = MaterialTheme.typography.titleLarge) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(Space.m)) {
+                Text(message, style = MaterialTheme.typography.bodyMedium)
+                if (requireReason) AppTextField(reason, { reason = it; error = null }, reasonLabel, error = error, singleLine = false, minLines = 2)
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (requireReason && reason.isBlank()) { error = needReason; return@Button }
+                    onDismiss()
+                    if (onConfirmedWithReason != null) onConfirmedWithReason(reason.trim()) else onConfirmed()
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = AppTheme.colors.error, contentColor = AppTheme.colors.onError),
+            ) { Text(confirmLabel) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
+}
+
+/** Re-authentication gate for destructive actions: asks for the signed-in user's PIN (unless switched off). */
 @Composable
 fun PinConfirmDialog(
     title: String,
@@ -720,6 +759,10 @@ fun PinConfirmDialog(
     reasonLabel: String = "",
     onConfirmedWithReason: ((String) -> Unit)? = null,
 ) {
+    if (!LocalFeatures.current.pinForActions) {
+        PlainConfirmDialog(title, message, confirmLabel, onConfirmed, onDismiss, requireReason, reasonLabel, onConfirmedWithReason)
+        return
+    }
     var pin by remember { mutableStateOf("") }
     var reason by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
