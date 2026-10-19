@@ -1,6 +1,7 @@
 package com.khodiyar.dairybilling.pdf
 
 import com.khodiyar.dairybilling.domain.billing.BalanceSummary
+import com.khodiyar.dairybilling.domain.billing.DailyLine
 import com.khodiyar.dairybilling.domain.billing.InvoiceLine
 import com.khodiyar.dairybilling.domain.money.Money
 import com.khodiyar.dairybilling.domain.money.Quantity
@@ -22,6 +23,7 @@ data class PdfLabels(
     val quantity: String = "Quantity",
     val rate: String = "Rate",
     val amount: String = "Amount",
+    val total: String = "Total",
     val noDeliveries: String = "No deliveries in this billing month.",
     val charges: String = "Charges this month",
     val previous: String = "Previous balance",
@@ -71,6 +73,10 @@ data class InvoiceDocument(
     val address: String,
     val lines: List<InvoiceLine>,
     val summary: BalanceSummary,
+    /** Day-wise rows. When present the bill lists every day and item instead of one line per item. */
+    val dailyLines: List<DailyLine> = emptyList(),
+    /** Formats an epoch day for the date column. */
+    val formatDate: (Long) -> String = { java.time.LocalDate.ofEpochDay(it).toString() },
 )
 
 object InvoicePdfBuilder {
@@ -127,6 +133,38 @@ object InvoicePdfBuilder {
         l.text(boxLeft + 12f, billTop + 42f, money(kotlin.math.abs(closing)), PdfStyles.TOTAL)
         l.y = maxOf(l.y, boxBottom) + 18f
 
+        if (doc.dailyLines.isNotEmpty()) {
+            // Day-wise: every day and item with the quantity given, then a total row.
+            val daily = TableWriter(
+                l,
+                listOf(
+                    Column(labels.date, 1.7f),
+                    Column(labels.item, 2.8f),
+                    Column(labels.quantity, 1.5f, Align.RIGHT),
+                    Column(labels.rate, 1.7f, Align.RIGHT),
+                    Column(labels.amount, 1.7f, Align.RIGHT),
+                ),
+            )
+            daily.header()
+            var lastDate = Long.MIN_VALUE
+            for (d in doc.dailyLines) {
+                daily.row(
+                    listOf(
+                        if (d.date != lastDate) doc.formatDate(d.date) else "",
+                        d.productName,
+                        Quantity.formatWithUnit(d.quantityMilli, d.unitLabel),
+                        money(d.ratePaise) + if (d.unitLabel.isNotBlank()) " / ${d.unitLabel}" else "",
+                        money(d.amountPaise),
+                    )
+                )
+                lastDate = d.date
+            }
+            // Item totals for the month (quantity per item), so the customer sees how much of each was given.
+            for (line in doc.lines) {
+                daily.row(listOf("", "${labels.total}: ${line.productName}", Quantity.formatWithUnit(line.quantityMilli, line.unitLabel), "", money(line.amountPaise)), bold = true, shaded = true)
+            }
+            daily.end()
+        } else {
         // Itemized lines
         val table = TableWriter(
             l,
@@ -157,6 +195,7 @@ object InvoicePdfBuilder {
             )
         }
         table.end()
+        }
         l.y += 14f
 
         // Totals block (kept together)

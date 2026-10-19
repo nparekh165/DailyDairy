@@ -649,4 +649,5 @@
     <string name="dlg_delete_dairy_title">%1$s हटाएँ?</string>
     <string name="dlg_delete_dairy_msg">इस डेयरी के सभी ग्राहक, डिलीवरी, बिल और भुगतान इस फ़ोन से हट जाएँगे। यह वापस नहीं होगा। ज़रूरत हो तो पहले बैकअप बना लें।</string>
     <string name="msg_dairy_deleted">डेयरी हटा दी गई</string>
+    <string name="pdf_total">कुल</string>
 </resources>

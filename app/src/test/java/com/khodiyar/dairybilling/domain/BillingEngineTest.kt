@@ -176,6 +176,22 @@ class BillingEngineTest {
         assertEquals(PaidState.SETTLED, BillingEngine.paidState(0, 0))
     }
 
+    @Test fun dailyLinesListEveryDayAndItemAndAddUpToCharges() {
+        val d = listOf(
+            milk(day(2026, 10, 2), 1000), // evening entry listed first on purpose
+            milk(day(2026, 10, 1), 1500),
+            milk(day(2026, 10, 1), 500), // second session same day -> added to the same row
+            LedgerDelivery(day(2026, 10, 1), 2, DeliveryStatus.DELIVERED, 500, 8000, 4000),
+            LedgerDelivery(day(2026, 10, 3), 1, DeliveryStatus.NO_DELIVERY, 0, 6000, 0),
+        )
+        val r = BillingEngine.compute(oct, 0, d, emptyList(), emptyList(), products)
+        val rows = r.dailyLines
+        assertEquals(listOf(day(2026, 10, 1), day(2026, 10, 1), day(2026, 10, 2)), rows.map { it.date })
+        assertEquals(listOf("Milk", "Curd", "Milk"), rows.map { it.productName })
+        assertEquals(2000, rows[0].quantityMilli)
+        assertEquals(r.summary.chargesPaise, rows.sumOf { it.amountPaise })
+    }
+
     @Test fun invoiceNumberFormat() {
         assertEquals("KD-2026-10-0001", BillingEngine.invoiceNumber("kd", oct, 1))
         assertEquals("KD-2026-10-0042-R2", BillingEngine.invoiceNumber("KD", oct, 42, 2))

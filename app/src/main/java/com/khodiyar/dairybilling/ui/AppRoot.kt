@@ -196,10 +196,16 @@ private fun MainNav() {
                     NavigationBarItem(
                         selected = route == t.route,
                         onClick = {
-                            nav.navigate(t.route) {
-                                popUpTo(nav.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (t.route == Routes.DASHBOARD) {
+                                // Home is the start screen: just go back to it. Using saveState/restoreState here
+                                // can restore the Delivery stack instead, so tapping Home seemed to do nothing.
+                                if (!nav.popBackStack(Routes.DASHBOARD, inclusive = false)) nav.navigate(Routes.DASHBOARD) { launchSingleTop = true }
+                            } else {
+                                nav.navigate(t.route) {
+                                    popUpTo(nav.graph.findStartDestination().id) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         },
                         icon = { Icon(t.icon, null) },

@@ -97,6 +97,7 @@ fun pdfLabelsOf(c: Context): PdfLabels = PdfLabels(
     quantity = c.getString(R.string.pdf_quantity),
     rate = c.getString(R.string.pdf_rate),
     amount = c.getString(R.string.pdf_amount),
+    total = c.getString(R.string.pdf_total),
     noDeliveries = c.getString(R.string.pdf_no_deliveries),
     charges = c.getString(R.string.pdf_charges),
     previous = c.getString(R.string.pdf_previous),

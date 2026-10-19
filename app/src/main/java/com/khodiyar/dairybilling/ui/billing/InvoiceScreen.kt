@@ -186,6 +186,19 @@ fun InvoicePreview(view: InvoiceView) {
             }
             val lines = view.displayLines
             if (lines.isEmpty()) Text(stringResource(R.string.pdf_no_deliveries), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, modifier = Modifier.padding(Space.s))
+            // Day-wise rows, the same as the PDF: date, item and quantity given that day.
+            var lastDate = Long.MIN_VALUE
+            view.live.dailyLines.forEach { d ->
+                Row(Modifier.fillMaxWidth().padding(horizontal = Space.s, vertical = 6.dp), verticalAlignment = Alignment.Top) {
+                    Text(if (d.date != lastDate) Dates.formatDay(d.date) else "", style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary, modifier = Modifier.weight(1.1f))
+                    Text(d.productName, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1.3f))
+                    Text(Quantity.formatWithUnit(d.quantityMilli, d.unitLabel), style = AppType.tableValue, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    Text(Money.format(d.amountPaise, cur), style = AppType.tableValue, modifier = Modifier.weight(1.1f), textAlign = TextAlign.End)
+                }
+                lastDate = d.date
+            }
+            if (view.live.dailyLines.isNotEmpty()) HorizontalDivider(color = AppTheme.ext.border)
+            // Month total per item
             lines.forEach { l ->
                 Row(Modifier.fillMaxWidth().padding(horizontal = Space.s, vertical = Space.s), verticalAlignment = Alignment.Top) {
                     Column(Modifier.weight(1.6f)) {

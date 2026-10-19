@@ -676,4 +676,5 @@
     <string name="dlg_delete_dairy_title">Delete %1$s?</string>
     <string name="dlg_delete_dairy_msg">All customers, deliveries, bills and payments of this dairy will be deleted from this phone. This cannot be undone. Make a backup first if you may need it.</string>
     <string name="msg_dairy_deleted">Dairy deleted</string>
+    <string name="pdf_total">Total</string>
 </resources>

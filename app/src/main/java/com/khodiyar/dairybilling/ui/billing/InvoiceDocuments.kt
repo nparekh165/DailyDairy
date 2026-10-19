@@ -46,6 +46,8 @@ fun InvoiceView.toDocument(todayLabel: String): InvoiceDocument {
         address = inv?.address ?: customer.address,
         lines = displayLines,
         summary = displaySummary,
+        dailyLines = live.dailyLines,
+        formatDate = { Dates.formatDay(it) },
     )
 }
 

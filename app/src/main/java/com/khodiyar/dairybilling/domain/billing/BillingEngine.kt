@@ -49,6 +49,17 @@ data class InvoiceLine(
     val deliveryDays: Int,
 )
 
+/** One day's delivery of one item on the bill. [date] is an epoch day. */
+data class DailyLine(
+    val date: Long,
+    val productId: Long,
+    val productName: String,
+    val unitLabel: String,
+    val ratePaise: Long,
+    val quantityMilli: Long,
+    val amountPaise: Long,
+)
+
 data class BalanceSummary(
     val previousBalancePaise: Long,
     val chargesPaise: Long,
@@ -62,6 +73,8 @@ data class InvoiceComputation(
     val period: YearMonth,
     val lines: List<InvoiceLine>,
     val summary: BalanceSummary,
+    /** The same deliveries listed day by day (what the bill prints). */
+    val dailyLines: List<DailyLine> = emptyList(),
 )
 
 enum class PaidState { PAID, PARTIALLY_PAID, UNPAID, CREDIT, SETTLED }
@@ -89,6 +102,28 @@ object BillingEngine {
      * Groups the period's DELIVERED entries into invoice lines, one per (product, applied rate),
      * so a mid-month rate change shows as two clearly priced lines.
      */
+    /**
+     * Day-wise bill rows: one row per day and item (morning and evening of the same day and rate are added up).
+     * The amounts are the stored per-entry amounts, so the rows always add up to the month's charges.
+     */
+    fun dailyLines(periodDeliveries: List<LedgerDelivery>, products: Map<Long, ProductInfo>): List<DailyLine> =
+        periodDeliveries
+            .filter { it.status == DeliveryStatus.DELIVERED && it.quantityMilli > 0 }
+            .groupBy { Triple(it.date, it.productId, it.ratePaise) }
+            .map { (key, rows) ->
+                val p = products[key.second]
+                DailyLine(
+                    date = key.first,
+                    productId = key.second,
+                    productName = p?.name ?: "#${key.second}",
+                    unitLabel = p?.unitLabel ?: "",
+                    ratePaise = key.third,
+                    quantityMilli = rows.sumOf { it.quantityMilli },
+                    amountPaise = rows.sumOf { it.amountPaise },
+                )
+            }
+            .sortedWith(compareBy<DailyLine>({ it.date }, { products[it.productId]?.sortOrder ?: Int.MAX_VALUE }, { it.productName }, { it.ratePaise }))
+
     fun buildLines(periodDeliveries: List<LedgerDelivery>, products: Map<Long, ProductInfo>): List<InvoiceLine> =
         periodDeliveries
             .filter { it.status == DeliveryStatus.DELIVERED && it.quantityMilli > 0 }
@@ -132,7 +167,7 @@ object BillingEngine {
             adjustmentsInPeriod = activeAdj.filter { it.date in start..end }.sumOf { it.signedPaise },
             paymentsInPeriod = activePay.filter { it.date in start..end }.sumOf { it.amountPaise },
         )
-        return InvoiceComputation(period, lines, summary)
+        return InvoiceComputation(period, lines, summary, dailyLines(inPeriod, products))
     }
 
     /** Current outstanding = opening + every charge and adjustment - every active payment. */
