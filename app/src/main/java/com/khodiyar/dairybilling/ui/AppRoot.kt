@@ -107,6 +107,7 @@ class RootViewModel(c: AppContainer) : AppViewModel(c) {
             val setup = c.auth.needsSetup()
             if (!setup && c.session.current == null) {
                 val settings = c.settings.get()
+                c.dairyNamed(settings.dairyName) // fills in the dairy list name for installs made before multi-dairy
                 c.session.autoLockMinutes = settings.autoLockMinutes
                 c.prefs.readSession()?.let { (userId, lastActive) ->
                     val window = settings.autoLockMinutes * 60_000L

@@ -39,6 +39,7 @@ import androidx.compose.material.icons.rounded.Policy
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Storefront
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -114,6 +115,7 @@ fun MoreScreen(navigate: (String) -> Unit) {
     val user by vm.user.collectAsState()
     val settings by vm.settings.collectAsState()
     var confirmLogout by remember { mutableStateOf(false) }
+    var dairies by remember { mutableStateOf(false) }
     val entries = buildList {
         add(Triple(R.string.nav_payments, Icons.Rounded.Payments, Routes.PAYMENTS).takeIf { vm.can(Permission.RECORD_PAYMENTS) || vm.can(Permission.VIEW_REPORTS) })
         add(Triple(R.string.nav_reports, Icons.Rounded.Insights, Routes.REPORTS).takeIf { vm.can(Permission.VIEW_REPORTS) })
@@ -149,6 +151,7 @@ fun MoreScreen(navigate: (String) -> Unit) {
                 }
             }
             Spacer(Modifier.height(Space.m))
+            DairyNotice(onSwitch = { dairies = true })
         }
         item {
             AppCard(Modifier.fillMaxWidth(), contentPadding = PaddingValues(vertical = Space.xs)) {
@@ -156,6 +159,8 @@ fun MoreScreen(navigate: (String) -> Unit) {
                     if (i > 0) ThinDivider(Modifier.padding(start = 64.dp))
                     NavRow(stringResource(res), icon) { navigate(route) }
                 }
+                ThinDivider(Modifier.padding(start = 64.dp))
+                NavRow(stringResource(R.string.nav_dairies), Icons.Rounded.Storefront) { dairies = true }
             }
         }
         item {
@@ -163,6 +168,7 @@ fun MoreScreen(navigate: (String) -> Unit) {
             Text(stringResource(R.string.label_version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textTertiary, modifier = Modifier.fillMaxWidth())
         }
     }
+    if (dairies) DairySwitcherSheet(onDismiss = { dairies = false })
     if (confirmLogout) ConfirmDialog(stringResource(R.string.action_logout), stringResource(R.string.dlg_logout_msg), stringResource(R.string.action_logout), onConfirm = { vm.logout() }, onDismiss = { confirmLogout = false })
 }
 
@@ -307,7 +313,7 @@ class SettingsViewModel(c: AppContainer) : AppViewModel(c) {
     val settings = c.settings.observe().stateInVm(null)
     val prefs = c.prefs.prefs.stateInVm(UiPrefs())
     val canEdit get() = c.session.has(Permission.SETTINGS)
-    fun save(s: AppSettingsEntity) = action(success = UiText.res(R.string.msg_settings_saved)) { c.settings.update(s) }
+    fun save(s: AppSettingsEntity) = action(success = UiText.res(R.string.msg_settings_saved)) { c.settings.update(s); c.dairyNamed(s.dairyName) }
     fun setTheme(t: ThemeMode) = viewModelScope.launch { c.prefs.setTheme(t) }
     fun changePin(current: String, new: String, onDone: () -> Unit) = action(success = UiText.res(R.string.msg_pin_changed)) { c.auth.changeOwnPin(current, new); onDone() }
 }

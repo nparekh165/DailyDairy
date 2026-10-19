@@ -10,6 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write # needed to publish the APK as a release
     steps:
       - uses: actions/checkout@v4
 
@@ -33,6 +35,24 @@ jobs:
         with:
           name: khodiyar-dairy-billing-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      # Every build of main becomes a release, so the phone can install from
+      # https://github.com/<owner>/<repo>/releases/latest/download/khodiyar-dairy-billing.apk
+      - name: Name APK for release
+        if: github.event_name != 'pull_request'
+        run: cp app/build/outputs/apk/debug/app-debug.apk khodiyar-dairy-billing.apk
+
+      - name: Publish release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Khodiyar Dairy Billing (build ${{ github.run_number }})
+          body: |
+            Debug APK built from ${{ github.sha }}.
+            On your phone: tap khodiyar-dairy-billing.apk below, then Install.
+          files: khodiyar-dairy-billing.apk
+          make_latest: true
 
       - name: Upload test reports
         if: always()

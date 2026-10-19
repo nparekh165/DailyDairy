@@ -625,4 +625,15 @@
     <string name="warn_never_backed_up">अभी तक कोई बैकअप नहीं बना।</string>
     <string name="warn_no_rate">मौजूदा दर नहीं: %1$s</string>
     <string name="warn_pending_today">%1$s नियमित ग्राहकों की आज कोई एंट्री नहीं।</string>
+    <string name="nav_dairies">डेयरियाँ</string>
+    <string name="dairy_switch_title">आपकी डेयरियाँ</string>
+    <string name="dairy_switch_hint">हर डेयरी के ग्राहक, उत्पाद, दरें, बिल, भुगतान, स्टाफ और बैकअप अलग रहते हैं। हर डेयरी में अलग से साइन इन करें।</string>
+    <string name="dairy_current">खुली है</string>
+    <string name="dairy_unnamed">बिना नाम की डेयरी</string>
+    <string name="dairy_signed_in_to">अभी खुली डेयरी: %1$s</string>
+    <string name="action_add_dairy">डेयरी जोड़ें</string>
+    <string name="action_switch_dairy">डेयरी बदलें</string>
+    <string name="dlg_add_dairy_title">नई डेयरी जोड़ें</string>
+    <string name="dlg_add_dairy_msg">इस फ़ोन पर एक नई खाली डेयरी बनेगी। इसके बाद आप उसका एडमिन लॉगिन बनाएँगे। आपकी बाकी डेयरियाँ नहीं बदलेंगी।</string>
+    <string name="err_dairy_exists">इस नाम की डेयरी पहले से है</string>
 </resources>

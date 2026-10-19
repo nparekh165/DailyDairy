@@ -652,4 +652,15 @@
     <string name="warn_never_backed_up">No backup has been made yet.</string>
     <string name="warn_no_rate">No current rate: %1$s</string>
     <string name="warn_pending_today">%1$s regular customers have no entry today.</string>
+    <string name="nav_dairies">Dairies</string>
+    <string name="dairy_switch_title">Your dairies</string>
+    <string name="dairy_switch_hint">Each dairy keeps its own customers, products, rates, bills, payments, staff and backups. You sign in to each dairy separately.</string>
+    <string name="dairy_current">Open</string>
+    <string name="dairy_unnamed">Unnamed dairy</string>
+    <string name="dairy_signed_in_to">You are in: %1$s</string>
+    <string name="action_add_dairy">Add dairy</string>
+    <string name="action_switch_dairy">Switch dairy</string>
+    <string name="dlg_add_dairy_title">Add a new dairy</string>
+    <string name="dlg_add_dairy_msg">A new, empty dairy is created on this phone. Next you set up its admin login. Your other dairies are not changed.</string>
+    <string name="err_dairy_exists">A dairy with this name already exists</string>
 </resources>

@@ -63,6 +63,20 @@ Alternatively use Android Studio → *Build → Generate Signed Bundle / APK*.
 2. Optionally create starter products (Milk, Curd, Paneer, Ghee) — **without rates**; set rates in *More → Products & rates*.
 3. Add customers (code, name, house/flat, mobile, opening balance, usual product & daily quantity, optional route order).
 
+## Multiple dairies
+
+One phone can run several separate dairies (businesses): *More → Dairies → Add dairy*, or *Switch dairy* on the sign-in screen.
+Each dairy has its **own database file** (`dairy_billing.db` for the first one, `dairy-<id>.db` for added ones), so
+customers, products, rates, bills, payments, staff logins, audit log, backups and safety backups never mix.
+Switching signs you out; you sign in to each dairy with that dairy's own login. The list of dairies is kept in
+`files/dairies.json`; if that file is lost, the app finds the database files again on the next start.
+A backup holds one dairy; restore it while the matching dairy is open.
+
+## Install on a phone from GitHub
+
+Each push to `main` publishes a release with the APK attached. On the phone (signed in to GitHub, since the repo is private) open
+`https://github.com/<owner>/<repo>/releases/latest` and tap `khodiyar-dairy-billing.apk`.
+
 ## Daily use
 
 * **Delivery tab** – pick the date (it stays selected for the session), product (and session if morning/evening is enabled),

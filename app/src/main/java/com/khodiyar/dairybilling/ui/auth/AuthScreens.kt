@@ -51,6 +51,7 @@ import com.khodiyar.dairybilling.data.repo.LoginResult
 import com.khodiyar.dairybilling.domain.UiText
 import com.khodiyar.dairybilling.domain.time.Dates
 import com.khodiyar.dairybilling.security.PasswordHasher
+import com.khodiyar.dairybilling.ui.admin.DairySwitchButton
 import com.khodiyar.dairybilling.ui.common.AppViewModel
 import com.khodiyar.dairybilling.ui.common.appViewModel
 import com.khodiyar.dairybilling.ui.components.AppCard
@@ -80,6 +81,7 @@ class SetupViewModel(c: AppContainer) : AppViewModel(c) {
     fun complete(dairy: String, phone: String, address: String, name: String, username: String, pin: String, starter: Boolean) =
         action(success = UiText.res(R.string.msg_setup_done)) {
             c.auth.completeSetup(dairy, phone, address, name, username, pin, starter)
+            c.dairyNamed(dairy)
             c.prefs.setLastUsername(username.trim().lowercase())
         }
 }
@@ -88,7 +90,10 @@ class SetupViewModel(c: AppContainer) : AppViewModel(c) {
 fun SetupScreen() {
     val vm = appViewModel { SetupViewModel(it) }
     val busy by vm.busy.collectAsState()
-    var dairy by rememberSaveable { mutableStateOf("Khodiyar Dairy") }
+    val registry = (androidx.compose.ui.platform.LocalContext.current.applicationContext as com.khodiyar.dairybilling.DairyApp).registry
+    val dairyCount = registry.state.collectAsState().value.dairies.size
+    // A newly added dairy starts with the name typed when it was added.
+    var dairy by rememberSaveable { mutableStateOf(registry.active.name.ifBlank { "Khodiyar Dairy" }) }
     var phone by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var name by rememberSaveable { mutableStateOf("") }
@@ -112,6 +117,8 @@ fun SetupScreen() {
             Text(stringResource(R.string.setup_title), style = MaterialTheme.typography.headlineLarge)
             Spacer(Modifier.height(Space.xs))
             Text(stringResource(R.string.setup_subtitle), style = MaterialTheme.typography.bodyMedium, color = AppTheme.ext.textSecondary)
+            // Lets the user go back to another dairy instead of setting this one up now.
+            if (dairyCount > 1) DairySwitchButton()
             Spacer(Modifier.height(Space.xl))
 
             SectionHeader(stringResource(R.string.setup_business))
@@ -247,6 +254,7 @@ fun LoginScreen() {
             }
             Spacer(Modifier.height(Space.m))
             androidx.compose.material3.TextButton(onClick = vm::notifyForgot) { Text(stringResource(R.string.action_forgot_pin)) }
+            DairySwitchButton()
             Spacer(Modifier.height(Space.l))
             Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Rounded.Lock, null, Modifier.size(14.dp), tint = AppTheme.ext.textTertiary)

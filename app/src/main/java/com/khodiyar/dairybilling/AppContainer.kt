@@ -18,6 +18,7 @@ import com.khodiyar.dairybilling.domain.time.SystemTimeProvider
 import com.khodiyar.dairybilling.domain.time.TimeProvider
 import com.khodiyar.dairybilling.security.KeystoreCipher
 import com.khodiyar.dairybilling.security.SessionManager
+import com.khodiyar.dairybilling.workspace.DairyRegistry
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +29,18 @@ enum class MessageKind { INFO, SUCCESS, ERROR }
 
 data class UserMessage(val text: UiText, val kind: MessageKind = MessageKind.INFO)
 
-/** Manual dependency container: one instance of each service for the whole process. */
-class AppContainer(context: Context, val time: TimeProvider = SystemTimeProvider, dbName: String? = AppDatabase.NAME) {
+/**
+ * Manual dependency container: one instance of each service for the open dairy.
+ * Switching dairy builds a fresh container on that dairy's own database (see [DairyApp.switchDairy]).
+ */
+class AppContainer(
+    context: Context,
+    val time: TimeProvider = SystemTimeProvider,
+    dbName: String? = AppDatabase.NAME,
+    val dairyId: String = DairyRegistry.MAIN,
+    /** Called when this dairy's business name is set, so the dairy list shows the same name. */
+    private val onDairyNamed: (String) -> Unit = {},
+) {
     val appContext: Context = context.applicationContext
     val db: AppDatabase = AppDatabase.build(appContext, dbName)
     val session = SessionManager(time)
@@ -44,7 +55,12 @@ class AppContainer(context: Context, val time: TimeProvider = SystemTimeProvider
     val billing = BillingRepository(db, session, audit, time)
     val reports = ReportRepository(db, session, billing, time)
     val backup = BackupManager(db, session, audit, time, BuildConfig.VERSION_NAME)
-    val safetyBackupDir: File get() = File(appContext.filesDir, "safety_backups")
+    val safetyBackupDir: File
+        get() = File(appContext.filesDir, if (dairyId == DairyRegistry.MAIN) "safety_backups" else "safety_backups_$dairyId")
+
+    fun dairyNamed(name: String) = runCatching { onDairyNamed(name) }
+
+    fun close() = runCatching { db.close() }
 
     /** App-wide snackbar channel. */
     val messages = MutableSharedFlow<UserMessage>(extraBufferCapacity = 8, onBufferOverflow = BufferOverflow.DROP_OLDEST)
