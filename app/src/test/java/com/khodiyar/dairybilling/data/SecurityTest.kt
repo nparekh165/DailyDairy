@@ -52,27 +52,27 @@ class SecurityTest {
     @Test fun pinIsNeverStoredInPlainText() = runBlocking {
         env.setupAdmin()
         val u = env.db.users().findByUsername("owner")!!
-        assertFalse(u.pinHash.contains("milk@2026"))
-        assertFalse(u.pinSalt.contains("milk@2026"))
+        assertFalse(u.pinHash.contains("482916"))
+        assertFalse(u.pinSalt.contains("482916"))
         val raw = env.db.openHelper.readableDatabase.query("SELECT * FROM users").use { c ->
             buildString { while (c.moveToNext()) for (i in 0 until c.columnCount) append(runCatching { c.getString(i) }.getOrNull()) }
         }
-        assertFalse(raw.contains("milk@2026"))
+        assertFalse(raw.contains("482916"))
     }
 
     @Test fun invalidLoginAndLockout() = runBlocking {
         env.setupAdmin()
         env.session.logout()
         assertEquals(LoginResult.InvalidCredentials, env.auth.login("owner", "wrong-pin"))
-        assertEquals(LoginResult.InvalidCredentials, env.auth.login("nobody", "milk@2026"))
+        assertEquals(LoginResult.InvalidCredentials, env.auth.login("nobody", "482916"))
         repeat(3) { env.auth.login("owner", "wrong-pin") }
         val r = env.auth.login("owner", "wrong-pin")
         assertTrue("5th failure locks the account", r is LoginResult.LockedOut)
         // Even the right PIN is refused while locked.
-        assertTrue(env.auth.login("owner", "milk@2026") is LoginResult.LockedOut)
+        assertTrue(env.auth.login("owner", "482916") is LoginResult.LockedOut)
         assertNull(env.session.current)
         env.time.extraMillis += 10 * 60_000
-        assertTrue(env.auth.login("OWNER", "milk@2026") is LoginResult.Success)
+        assertTrue(env.auth.login("OWNER", "482916") is LoginResult.Success)
         assertEquals(0, env.db.users().findByUsername("owner")!!.failedAttempts)
     }
 
@@ -96,14 +96,14 @@ class SecurityTest {
         env.setupAdmin()
         val milk = env.milk()
         val cust = env.customer("C-1")
-        env.auth.createStaff("Ravi", "ravi", "deliver#1", setOf(Permission.RESTORE, Permission.MANAGE_USERS))
+        env.auth.createStaff("Ravi", "ravi", "739154", setOf(Permission.RESTORE, Permission.MANAGE_USERS))
         env.auth.logout()
-        assertTrue(env.auth.login("ravi", "deliver#1") is LoginResult.Success)
+        assertTrue(env.auth.login("ravi", "739154") is LoginResult.Success)
         assertFalse("admin-only perms are ignored for staff", env.session.has(Permission.RESTORE))
 
         expectUnauthorized { env.products.addRate(milk, 7000, env.day(2026, 10, 19), "", false) }
         expectUnauthorized { env.products.create("Ghee", ProductUnit.KILOGRAM, "", 500, 50000, 0) }
-        expectUnauthorized { env.auth.createStaff("X", "xyz", "abc#1234", emptySet()) }
+        expectUnauthorized { env.auth.createStaff("X", "xyz", "615283", emptySet()) }
         expectUnauthorized { env.billing.finalize(cust, YearMonth.of(2026, 10)) }
         expectUnauthorized { env.billing.lock(YearMonth.of(2026, 9)) }
         expectUnauthorized { env.payments.record(PaymentInput(cust, env.day(2026, 10, 19), 100, PaymentMethod.CASH, "", "r1")) }
@@ -132,9 +132,9 @@ class SecurityTest {
     @Test fun grantedStaffPermissionWorks() = runBlocking {
         env.setupAdmin()
         val cust = env.customer("C-1")
-        env.auth.createStaff("Ravi", "ravi", "deliver#1", setOf(Permission.RECORD_PAYMENTS))
+        env.auth.createStaff("Ravi", "ravi", "739154", setOf(Permission.RECORD_PAYMENTS))
         env.auth.logout()
-        env.auth.login("ravi", "deliver#1")
+        env.auth.login("ravi", "739154")
         val r = env.payments.record(PaymentInput(cust, env.day(2026, 10, 19), 10_000, PaymentMethod.UPI, "", "req-a"))
         assertTrue(r is com.khodiyar.dairybilling.data.repo.PaymentSaveResult.Saved)
         expectUnauthorized { env.payments.reverse((r as com.khodiyar.dairybilling.data.repo.PaymentSaveResult.Saved).payment.id, "mistake") }
@@ -142,7 +142,7 @@ class SecurityTest {
 
     @Test fun reauthVerifiesCurrentUserPin() = runBlocking {
         env.setupAdmin()
-        assertTrue(env.auth.verifyCurrentUser("milk@2026"))
+        assertTrue(env.auth.verifyCurrentUser("482916"))
         assertFalse(env.auth.verifyCurrentUser("nope"))
     }
 

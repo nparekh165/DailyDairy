@@ -34,7 +34,8 @@ class UtilityTest {
         assertFalse(PasswordHasher.isAcceptable("654321"))
         assertFalse(PasswordHasher.isAcceptable("000000"))
         assertTrue(PasswordHasher.isAcceptable("482916"))
-        assertTrue(PasswordHasher.isAcceptable("milk@home"))
+        assertFalse(PasswordHasher.isAcceptable("milk@home"))
+        assertFalse(PasswordHasher.isAcceptable("48a916"))
     }
 
     private fun user(role: UserRole, perms: String = "", active: Boolean = true) =

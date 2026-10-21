@@ -139,12 +139,12 @@ fun SetupScreen() {
                 AppTextField(username, { username = it.trim() }, stringResource(R.string.field_username), leadingIcon = Icons.Rounded.AdminPanelSettings,
                     supporting = stringResource(R.string.hint_username))
                 Spacer(Modifier.height(Space.s))
-                AppTextField(pin, { pin = it }, stringResource(R.string.field_new_pin), leadingIcon = Icons.Rounded.Lock, password = true,
-                    keyboardType = KeyboardType.Password, error = if (pinWeak) stringResource(R.string.err_pin_weak) else null,
+                AppTextField(pin, { pin = it.filter(Char::isDigit) }, stringResource(R.string.field_new_pin), leadingIcon = Icons.Rounded.Lock, password = true,
+                    keyboardType = KeyboardType.NumberPassword, error = if (pinWeak) stringResource(R.string.err_pin_weak) else null,
                     supporting = stringResource(R.string.hint_pin))
                 Spacer(Modifier.height(Space.s))
-                AppTextField(pin2, { pin2 = it }, stringResource(R.string.field_confirm_pin), leadingIcon = Icons.Rounded.Lock, password = true,
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done,
+                AppTextField(pin2, { pin2 = it.filter(Char::isDigit) }, stringResource(R.string.field_confirm_pin), leadingIcon = Icons.Rounded.Lock, password = true,
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done,
                     error = if (mismatch) stringResource(R.string.err_pin_mismatch) else null)
             }
             Spacer(Modifier.height(Space.m))
@@ -228,8 +228,8 @@ fun LoginScreen() {
                 AppTextField(username, { username = it.trim() }, stringResource(R.string.field_username), leadingIcon = Icons.Rounded.Person)
                 Spacer(Modifier.height(Space.s))
                 AppTextField(
-                    pin, { pin = it }, stringResource(R.string.field_pin), leadingIcon = Icons.Rounded.Lock, password = true,
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done,
+                    pin, { pin = it.filter(Char::isDigit) }, stringResource(R.string.field_pin), leadingIcon = Icons.Rounded.Lock, password = true,
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done,
                     onImeAction = { if (username.isNotBlank() && pin.isNotEmpty()) vm.login(username, pin) },
                 )
                 if (error != null) {

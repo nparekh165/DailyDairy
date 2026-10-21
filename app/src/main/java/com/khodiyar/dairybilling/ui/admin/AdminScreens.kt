@@ -269,7 +269,7 @@ fun StaffScreen(onBack: () -> Unit) {
         AlertDialog(
             onDismissRequest = { resetting = null },
             title = { Text(stringResource(R.string.dlg_reset_pin_title, u.displayName)) },
-            text = { AppTextField(pin, { pin = it }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.Password, supporting = stringResource(R.string.hint_pin)) },
+            text = { AppTextField(pin, { pin = it.filter(Char::isDigit) }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.NumberPassword, supporting = stringResource(R.string.hint_pin)) },
             confirmButton = { Button(enabled = pin.length >= 6, onClick = { vm.resetPin(u, pin) { resetting = null } }) { Text(stringResource(R.string.action_save)) } },
             dismissButton = { TextButton(onClick = { resetting = null }) { Text(stringResource(R.string.action_cancel)) } },
         )
@@ -291,7 +291,7 @@ private fun StaffDialog(user: UserEntity?, onDismiss: () -> Unit, onSave: (Strin
                 AppTextField(name, { name = it }, stringResource(R.string.field_staff_name), capitalizeWords = true)
                 if (user == null) {
                     AppTextField(username, { username = it.trim() }, stringResource(R.string.field_username), supporting = stringResource(R.string.hint_username))
-                    AppTextField(pin, { pin = it }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.Password, supporting = stringResource(R.string.hint_pin))
+                    AppTextField(pin, { pin = it.filter(Char::isDigit) }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.NumberPassword, supporting = stringResource(R.string.hint_pin))
                 }
                 Text(stringResource(R.string.section_permissions), style = MaterialTheme.typography.labelLarge)
                 Text(stringResource(R.string.hint_permissions), style = MaterialTheme.typography.bodySmall, color = AppTheme.ext.textSecondary)
@@ -462,9 +462,9 @@ fun SettingsScreen(onBack: () -> Unit) {
             title = { Text(stringResource(R.string.action_change_pin)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(Space.s)) {
-                    AppTextField(current, { current = it }, stringResource(R.string.field_current_pin), password = true, keyboardType = KeyboardType.Password)
-                    AppTextField(new, { new = it }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.Password, supporting = stringResource(R.string.hint_pin))
-                    AppTextField(confirm, { confirm = it }, stringResource(R.string.field_confirm_pin), password = true, keyboardType = KeyboardType.Password,
+                    AppTextField(current, { current = it.filter(Char::isDigit) }, stringResource(R.string.field_current_pin), password = true, keyboardType = KeyboardType.NumberPassword)
+                    AppTextField(new, { new = it.filter(Char::isDigit) }, stringResource(R.string.field_new_pin), password = true, keyboardType = KeyboardType.NumberPassword, supporting = stringResource(R.string.hint_pin))
+                    AppTextField(confirm, { confirm = it.filter(Char::isDigit) }, stringResource(R.string.field_confirm_pin), password = true, keyboardType = KeyboardType.NumberPassword,
                         error = if (confirm.isNotEmpty() && confirm != new) stringResource(R.string.err_pin_mismatch) else null)
                 }
             },

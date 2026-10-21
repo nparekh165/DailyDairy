@@ -44,9 +44,9 @@ object PasswordHasher {
 
     private fun b64(bytes: ByteArray): String = Base64.getEncoder().encodeToString(bytes)
 
-    /** PIN/password policy: at least 6 characters, not all the same character, not a simple sequence. */
+    /** PIN policy: at least 6 digits (numbers only), not all the same digit, not a simple sequence. */
     fun isAcceptable(secret: String): Boolean {
-        if (secret.length < 6) return false
+        if (secret.length < 6 || !secret.all(Char::isDigit)) return false
         if (secret.all { it == secret[0] }) return false
         val ascending = "0123456789012345678901234567890"
         val descending = ascending.reversed()

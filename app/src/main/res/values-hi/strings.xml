@@ -248,7 +248,7 @@
     <string name="err_pdf_unreadable">बनी PDF खोली नहीं जा सकी।</string>
     <string name="err_period_locked">%1$s लॉक है।</string>
     <string name="err_pin_mismatch">PIN मेल नहीं खाते।</string>
-    <string name="err_pin_weak">कम से कम 6 अक्षर, दोहराए या क्रमिक नहीं (जैसे 123456 नहीं)।</string>
+    <string name="err_pin_weak">कम से कम 6 अंक (केवल नंबर), दोहराए या क्रमिक नहीं (जैसे 123456 नहीं)।</string>
     <string name="err_product_exists">इस नाम का उत्पाद पहले से है।</string>
     <string name="err_qty_invalid">गलत मात्रा</string>
     <string name="err_qty_large">मात्रा बहुत अधिक है</string>
@@ -300,14 +300,14 @@
     <string name="field_language">भाषा</string>
     <string name="field_method">भुगतान का तरीका</string>
     <string name="field_mobile">मोबाइल नंबर</string>
-    <string name="field_new_pin">नया PIN / पासवर्ड</string>
+    <string name="field_new_pin">नया PIN</string>
     <string name="field_note_optional">नोट (वैकल्पिक)</string>
     <string name="field_notes">नोट्स</string>
     <string name="field_opening_balance">प्रारंभिक शेष</string>
     <string name="field_payment_date">भुगतान की तारीख</string>
     <string name="field_payment_instructions">भुगतान निर्देश</string>
     <string name="field_phone">संपर्क फ़ोन</string>
-    <string name="field_pin">PIN / पासवर्ड</string>
+    <string name="field_pin">PIN</string>
     <string name="field_product_name">उत्पाद का नाम</string>
     <string name="field_rate_per">प्रति %1$s दर</string>
     <string name="field_reason">कारण</string>
@@ -342,7 +342,7 @@
     <string name="hint_payment_policy">भुगतान बकाया घटाता है, सबसे पुराना बकाया पहले चुकता होता है। भुगतान अपनी तारीख वाले महीने में गिना जाता है।</string>
     <string name="hint_permissions">डिलीवरी दर्ज करना हमेशा अनुमत है। स्टाफ कभी उपयोगकर्ता, सेटिंग्स या बैकअप रिस्टोर नहीं संभाल सकता।</string>
     <string name="hint_pick_customer">खोजें और ग्राहक चुनें</string>
-    <string name="hint_pin">कम से कम 6 अक्षर। किसी को न बताएँ।</string>
+    <string name="hint_pin">कम से कम 6 अंक, केवल नंबर। किसी को न बताएँ।</string>
     <string name="hint_rate_history">हर डिलीवरी में दर्ज समय की दर सहेजी जाती है, इसलिए दर बदलने से पुराने रिकॉर्ड या जारी बिल नहीं बदलते।</string>
     <string name="hint_reference">वैकल्पिक</string>
     <string name="hint_route">वैकल्पिक, डिलीवरी सूची का क्रम</string>

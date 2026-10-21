@@ -782,7 +782,7 @@ fun PinConfirmDialog(
                 }
                 AppTextField(
                     value = pin,
-                    onValueChange = { pin = it; error = null },
+                    onValueChange = { pin = it.filter(Char::isDigit); error = null },
                     label = stringResource(R.string.label_your_pin),
                     error = error,
                     keyboardType = KeyboardType.NumberPassword,

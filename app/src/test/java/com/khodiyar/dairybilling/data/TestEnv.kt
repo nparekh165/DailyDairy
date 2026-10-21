@@ -49,7 +49,7 @@ class TestEnv {
     fun close() = db.close()
 
     fun setupAdmin(starter: Boolean = false) = runBlocking {
-        auth.completeSetup("Khodiyar Dairy", "9876543210", "Main Road", "Owner", "owner", "milk@2026", starter)
+        auth.completeSetup("Khodiyar Dairy", "9876543210", "Main Road", "Owner", "owner", "482916", starter)
     }
 
     fun day(y: Int, m: Int, d: Int) = LocalDate.of(y, m, d).toEpochDay()

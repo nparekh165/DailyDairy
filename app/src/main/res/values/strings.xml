@@ -258,7 +258,7 @@
     <string name="err_pdf_unreadable">Generated PDF could not be opened.</string>
     <string name="err_period_locked">%1$s is locked.</string>
     <string name="err_pin_mismatch">PINs do not match.</string>
-    <string name="err_pin_weak">Use at least 6 characters, not repeated or sequential (e.g. not 123456).</string>
+    <string name="err_pin_weak">Use at least 6 digits (numbers only), not repeated or sequential (e.g. not 123456).</string>
     <string name="err_product_exists">A product with this name already exists.</string>
     <string name="err_qty_invalid">Invalid quantity</string>
     <string name="err_qty_large">Quantity is too large</string>
@@ -311,14 +311,14 @@
     <string name="field_language">Language</string>
     <string name="field_method">Payment method</string>
     <string name="field_mobile">Mobile number</string>
-    <string name="field_new_pin">New PIN / password</string>
+    <string name="field_new_pin">New PIN</string>
     <string name="field_note_optional">Note (optional)</string>
     <string name="field_notes">Notes</string>
     <string name="field_opening_balance">Opening balance</string>
     <string name="field_payment_date">Payment date</string>
     <string name="field_payment_instructions">Payment instructions</string>
     <string name="field_phone">Contact phone</string>
-    <string name="field_pin">PIN / password</string>
+    <string name="field_pin">PIN</string>
     <string name="field_product_name">Product name</string>
     <string name="field_rate_per">Rate per %1$s</string>
     <string name="field_reason">Reason</string>
@@ -355,7 +355,7 @@
     <string name="hint_payment_policy">Payments reduce the outstanding balance, settling the oldest dues first. A payment is counted in the month of its date.</string>
     <string name="hint_permissions">Recording deliveries is always allowed. Staff can never manage users, settings or restore backups.</string>
     <string name="hint_pick_customer">Search and pick a customer</string>
-    <string name="hint_pin">At least 6 characters. Never share it.</string>
+    <string name="hint_pin">At least 6 digits, numbers only. Never share it.</string>
     <string name="hint_rate_history">Each delivery stores the rate used at entry, so rate changes never alter past records or issued invoices.</string>
     <string name="hint_reference">Optional</string>
     <string name="hint_route">Optional, sorts delivery list</string>
