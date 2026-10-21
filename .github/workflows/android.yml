@@ -60,6 +60,16 @@ jobs:
           files: khodiyar-dairy-billing.apk
           make_latest: true
 
+      # Keep only the newest APK on the releases page.
+      - name: Remove older releases
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq '.[].tagName' |
+            grep -vx "build-${{ github.run_number }}" |
+            while read -r tag; do gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes; done
+
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
