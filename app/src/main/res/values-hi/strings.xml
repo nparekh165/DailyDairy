@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">खोडियार डेयरी बिलिंग</string>
+    <string name="app_name">DailyDairy</string>
 
     <string name="nav_home">होम</string>
     <string name="nav_delivery">डिलीवरी</string>
@@ -210,7 +210,7 @@
     <string name="err_auto_lock">ऑटो-लॉक 0 से 240 मिनट के बीच हो।</string>
     <string name="err_backup_checksum">बैकअप फ़ाइल खराब है (चेकसम मेल नहीं खाता)।</string>
     <string name="err_backup_corrupt">यह फ़ाइल पढ़ने योग्य बैकअप नहीं है।</string>
-    <string name="err_backup_format">यह खोडियार डेयरी बिलिंग का बैकअप नहीं है।</string>
+    <string name="err_backup_format">यह DailyDairy का बैकअप नहीं है।</string>
     <string name="err_backup_incomplete">बैकअप फ़ाइल अधूरी है।</string>
     <string name="err_backup_integrity">बैकअप में दोहराए ID या टूटे संदर्भ हैं, रिस्टोर नहीं किया गया।</string>
     <string name="err_backup_newer">बैकअप नए ऐप संस्करण से बना है। पहले ऐप अपडेट करें।</string>

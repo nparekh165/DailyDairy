@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Khodiyar Dairy Billing</string>
+    <string name="app_name">DailyDairy</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
@@ -220,7 +220,7 @@
     <string name="err_auto_lock">Auto-lock must be between 0 and 240 minutes.</string>
     <string name="err_backup_checksum">Backup file is damaged (checksum mismatch).</string>
     <string name="err_backup_corrupt">This file is not a readable backup.</string>
-    <string name="err_backup_format">This file is not a Khodiyar Dairy Billing backup.</string>
+    <string name="err_backup_format">This file is not a DailyDairy backup.</string>
     <string name="err_backup_incomplete">Backup file is incomplete.</string>
     <string name="err_backup_integrity">Backup has duplicate IDs or broken references and was not restored.</string>
     <string name="err_backup_newer">Backup was made by a newer app version. Update the app first.</string>

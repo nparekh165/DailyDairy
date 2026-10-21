@@ -75,7 +75,7 @@ class BackupViewModel(c: AppContainer) : AppViewModel(c) {
     init { refreshSafety() }
     private fun refreshSafety() = viewModelScope.launch { safety.value = withContext(Dispatchers.IO) { c.backup.listSafetyBackups(c.safetyBackupDir) } }
 
-    fun fileName(): String = "khodiyar_backup_" + java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm")) + ".zip"
+    fun fileName(): String = "dailydairy_backup_" + java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm")) + ".zip"
 
     suspend fun writeBackup(out: OutputStream) {
         val m = c.backup.createBackup(out)

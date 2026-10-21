@@ -1,4 +1,4 @@
-# Khodiyar Dairy Billing (offline Android app)
+# DailyDairy (offline Android app)
 
 A fully offline dairy billing and milk-delivery app for a small Indian dairy: customers, houses/flats,
 multiple products with effective-dated rates, fast daily delivery entry, monthly invoices with
@@ -86,7 +86,7 @@ A backup holds one dairy; restore it while the matching dairy is open.
 ## Install on a phone from GitHub
 
 Each push to `main` publishes a release with the APK attached. On the phone (signed in to GitHub, since the repo is private) open
-`https://github.com/<owner>/<repo>/releases/latest` and tap `khodiyar-dairy-billing.apk`.
+`https://github.com/<owner>/<repo>/releases/latest` and tap `dailydairy.apk`.
 
 ## Daily use
 

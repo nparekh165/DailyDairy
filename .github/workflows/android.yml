@@ -39,25 +39,25 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: khodiyar-dairy-billing-debug-apk
+          name: dailydairy-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
       # Every build of main becomes a release, so the phone can install from
-      # https://github.com/<owner>/<repo>/releases/latest/download/khodiyar-dairy-billing.apk
+      # https://github.com/<owner>/<repo>/releases/latest/download/dailydairy.apk
       - name: Name APK for release
         if: github.event_name != 'pull_request'
-        run: cp app/build/outputs/apk/debug/app-debug.apk khodiyar-dairy-billing.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk dailydairy.apk
 
       - name: Publish release
         if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Khodiyar Dairy Billing (build ${{ github.run_number }})
+          name: DailyDairy (build ${{ github.run_number }})
           body: |
             Debug APK built from ${{ github.sha }}.
-            On your phone: tap khodiyar-dairy-billing.apk below, then Install.
-          files: khodiyar-dairy-billing.apk
+            On your phone: tap dailydairy.apk below, then Install.
+          files: dailydairy.apk
           make_latest: true
 
       # Keep only the newest APK on the releases page.
