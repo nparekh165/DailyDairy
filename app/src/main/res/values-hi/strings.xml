@@ -650,4 +650,10 @@
     <string name="dlg_delete_dairy_msg">इस डेयरी के सभी ग्राहक, डिलीवरी, बिल और भुगतान इस फ़ोन से हट जाएँगे। यह वापस नहीं होगा। ज़रूरत हो तो पहले बैकअप बना लें।</string>
     <string name="msg_dairy_deleted">डेयरी हटा दी गई</string>
     <string name="pdf_total">कुल</string>
+    <string name="mode_by_date">तारीख से</string>
+    <string name="mode_by_customer">ग्राहक से</string>
+    <string name="action_month_entry">महीने की दिन-वार एंट्री</string>
+    <string name="label_scroll_more_days">और दिन देखने के लिए स्क्रॉल करें (%1$d – %2$d)</string>
+    <string name="cd_previous_customer">पिछला ग्राहक</string>
+    <string name="cd_next_customer">अगला ग्राहक</string>
 </resources>

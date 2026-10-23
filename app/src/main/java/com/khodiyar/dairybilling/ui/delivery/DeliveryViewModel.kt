@@ -184,7 +184,7 @@ class DeliveryViewModel(c: AppContainer) : AppViewModel(c) {
     val hasDrafts: Boolean get() = drafts.value.isNotEmpty()
 
     fun setDate(d: LocalDate) { drafts.value = emptyMap(); date.value = d }
-    private fun blockedByDrafts(): Boolean {
+    fun blockedByDrafts(): Boolean {
         if (drafts.value.isEmpty()) return false
         c.notify(UiText.res(R.string.msg_save_first), MessageKind.ERROR)
         return true

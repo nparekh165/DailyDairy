@@ -33,6 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AutoFixHigh
 import androidx.compose.material.icons.rounded.Block
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
@@ -63,6 +64,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -122,8 +124,42 @@ fun sessionLabel(s: DeliverySession): String = when (s) {
     DeliverySession.EVENING -> stringResource(R.string.session_evening)
 }
 
+enum class EntryMode { BY_DATE, BY_CUSTOMER }
+
+/** Delivery tab: all customers for one day, or one customer for every day of a month. */
 @Composable
 fun DeliveryScreen(navigate: (String) -> Unit) {
+    var mode by rememberSaveable { mutableStateOf(EntryMode.BY_DATE) }
+    var monthRequest by remember { mutableStateOf<Pair<Long, Long>?>(null) }
+    val dayVm = appViewModel { DeliveryViewModel(it) }
+    val monthVm = appViewModel { CustomerMonthViewModel(it) }
+    val modeSwitch: @Composable () -> Unit = {
+        ChoiceChips(
+            EntryMode.entries, mode,
+            {
+                when (it) {
+                    EntryMode.BY_DATE -> stringResource(R.string.mode_by_date)
+                    EntryMode.BY_CUSTOMER -> stringResource(R.string.mode_by_customer)
+                }
+            },
+            { m ->
+                if (m != mode && !(if (mode == EntryMode.BY_DATE) dayVm.blockedByDrafts() else monthVm.blockedByDrafts())) mode = m
+            },
+        )
+    }
+    when (mode) {
+        EntryMode.BY_DATE -> DailyEntryScreen(navigate, modeSwitch) { customerId, epochDay ->
+            if (!dayVm.blockedByDrafts()) {
+                monthRequest = customerId to epochDay
+                mode = EntryMode.BY_CUSTOMER
+            }
+        }
+        EntryMode.BY_CUSTOMER -> CustomerMonthScreen(navigate, monthRequest, { monthRequest = null }, modeSwitch)
+    }
+}
+
+@Composable
+private fun DailyEntryScreen(navigate: (String) -> Unit, modeSwitch: @Composable () -> Unit, openMonth: (Long, Long) -> Unit) {
     val vm = appViewModel { DeliveryViewModel(it) }
     val s by vm.ui.collectAsState()
     val busy by vm.busy.collectAsState()
@@ -182,6 +218,7 @@ fun DeliveryScreen(navigate: (String) -> Unit) {
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).background(AppTheme.colors.background)) {
             Column(Modifier.padding(horizontal = Space.screen), verticalArrangement = Arrangement.spacedBy(Space.s)) {
+                modeSwitch()
                 DateStepper(s.date, ::changeDate, Modifier.fillMaxWidth(), maxDate = s.today, today = s.today)
                 if (s.sessionsEnabled) {
                     ChoiceChips(DeliverySession.entries, s.session, { sessionLabel(it) }, { vm.setSession(it) })
@@ -227,6 +264,7 @@ fun DeliveryScreen(navigate: (String) -> Unit) {
                                 onMark = { st -> vm.mark(row.customer.id, st) },
                                 onClear = { vm.clear(row.customer.id) },
                                 onOpen = { sheetCustomer = row.customer },
+                                onMonth = { openMonth(row.customer.id, s.date.toEpochDay()) },
                                 modifier = Modifier.animateItem(),
                             )
                             ThinDivider(Modifier.padding(start = 76.dp))
@@ -300,6 +338,7 @@ private fun DeliveryRowItem(
     onMark: (DeliveryStatus) -> Unit,
     onClear: () -> Unit,
     onOpen: () -> Unit,
+    onMonth: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val bg by animateColorAsState(
@@ -361,6 +400,7 @@ private fun DeliveryRowItem(
                     DropdownMenuItem({ Text(stringResource(R.string.action_mark_no_delivery)) }, { menu = false; onMark(DeliveryStatus.NO_DELIVERY) }, leadingIcon = { Icon(Icons.Rounded.DoNotDisturbOn, null) })
                     DropdownMenuItem({ Text(stringResource(R.string.action_mark_missed)) }, { menu = false; onMark(DeliveryStatus.MISSED) }, leadingIcon = { Icon(Icons.Rounded.EventBusy, null) })
                     DropdownMenuItem({ Text(stringResource(R.string.action_all_products)) }, { menu = false; onOpen() }, leadingIcon = { Icon(Icons.Rounded.Groups, null) })
+                    DropdownMenuItem({ Text(stringResource(R.string.action_month_entry)) }, { menu = false; onMonth() }, leadingIcon = { Icon(Icons.Rounded.CalendarMonth, null) })
                     if (row.existing != null || row.dirty) {
                         DropdownMenuItem({ Text(stringResource(R.string.action_clear_entry)) }, { menu = false; onClear() }, leadingIcon = { Icon(Icons.Rounded.Close, null) })
                     }
